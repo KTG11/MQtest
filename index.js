@@ -30,7 +30,7 @@ app.listen(5038,()=>{
     });
 })
 
-app.get(/login/,(request,response)=>{
+app.get('/login',(request,response)=>{
     database.collection("MathQuest").find({}).toArray((error,documents)=>{
         response.send(result);
     });
