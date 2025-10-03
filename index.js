@@ -17,12 +17,12 @@ const PORT = process.env.PORT || 10000;
 app.listen(PORT, "0.0.0.0", () => {
     MongoClient.connect(CONNECTION_STRING, (error, client) => {
         if (error) {
-            console.error("❌ MongoDB connection failed:", error);
+            console.error("MongoDB connection failed:", error);
             process.exit(1);
         }
         database = client.db(DATABASENAME);
-        console.log("✅ MongoDB connection Successful");
-        console.log(`🚀 Server running on port ${PORT}`);
+        console.log("MongoDB connection Successful");
+        console.log(`Server running on port ${PORT}`);
     });
 });
 
@@ -50,7 +50,7 @@ app.post("/login", multer().none(), (request, response) => {
                 if (err) {
                     response.status(500).send("Error inserting document");
                 } else {
-                    response.send("✅ Insert successful");
+                    response.send("Insert successful");
                 }
             });
         }
