@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathQuest.lk</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2537d8;
+            font-family: Arial, sans-serif;
+            }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2rem;
+            background: linear-gradient(-45, #ff9a9e, #fad0c4, #fad0c4, #a1c4fd, #c2e9fb);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            }
+
+        body {
+            margin: 0;
+            background: #111;
+            height: 100vh;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .container {
+            background: #dddddd;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            display: block;
+            width: 120px;
+            margin: 15px auto;
+            padding: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .teacher {
+            background-color: #f8bfbf;
+        }
+
+        .student {
+            background-color: #f5b5b5;
+        }
+
+        .parent {
+            background-color: #f44747;
+            color:white
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .h1_text {
+            position: absolute;
+            top: 50px;
+            text-align: center;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #3dd8ec, #b4873e);
+         }
+
+        h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-top: 40px;
+        color: #2c3e50;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            background: rgb(2, 162, 255);
+            padding: 60px 60px;
+            border-radius: 25px;
+            box-shadow: 0px 4px 6px rgba(0,0,0,0.15);
+            backdrop-filter: blur(20px);
+            text-align: center;
+        }
+
+        .btn {
+            display: block;
+            width: 180px;
+            margin: 20px auto;
+            padding: 12px 0;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .btn--primary{
+            background: linear-gradient(135deg, rgba(125,211,252,0,12)),
+            rgba(110,231,183,0.08);
+            border: 1px solid rgba(125,211,252,0.16);
+            box-shadow: 0px 10px 30px rgba(59,130,242,0.06),0 2px 0
+            rgba(255,255,255,0.02)inset;
+        }
+
+        .btn--primary::after {
+            content: "Welcome To MathQuest";
+            pointer-events: none;opacity:0;transition: opacity,2s ease,transform ,2s,ease;
+            background: linear-gradient(90deg, rgba(255,255,255,0.06),
+            rgba(255,255,255,0.02));
+            transform: translateX(-12%);
+        }
+
+        .btn--primary:hover{transform: translateY(-4px);}
+        .btn--primary:hover::after{opacity:1;transform:translateX(12%)
+        }
+        
+        .symbol {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(19, 2, 43, 0.925);
+            animation: float 12s linear infinite;
+        }
+
+        .cursor {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #00ffcc;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1 ease;
+        }
+
+        @keyframes float {
+            from {transform: translateY(100vh) rotate(0deg);}
+            to {transform:translateY(-100vh) rotate(360deg);}
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+         }
+        
+
+
+    </style>
+</head>
+<body>
+    <h1 class="h1_text">Mathquest</h1>
+
+    <div class="container">
+        <button class="btn teacher">Teacher</button>
+        <button class="btn student">Student</button>
+        <button class="btn parent">Parent</button>
+        <button class="btn--primary"></button>
+    </div>
+
+    <div class="symbol" style="left:20%">+</div>
+    <div class="symbol" style="left:30%">x</div>
+    <div class="symbol" style="left:40%">√</div>
+    <div class="symbol" style="left:50%">÷</div>
+    <div class="symbol" style="left:60%">=</div>
+    <div class="symbol" style="left:70%">%</div>
+    <div class="symbol" style="left:80%">$</div>
+
+    <body>
+        <div class="cursor" id="cursor"></div>
+
+        <script>
+            const cursor = document.getElementById("cursor");
+
+            document.addEventListener("mousemove", (e) =>{
+                cursor.style.left = e.pageX + "px";
+                cursor.style.top = e.pageY + "px";
+            });
+        </script>
+    </body>
+    
+    
+</body>
+</html>
