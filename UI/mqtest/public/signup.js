@@ -1,0 +1,86 @@
+// signup.js
+const signupHTML = `
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #2a2d4a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #3a3d5f;
+      padding: 30px;
+      border-radius: 10px;
+      width: 250px;
+    }
+    input {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px;
+      border: none;
+      background: #4caf50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    a {
+      color: #a1c6ff;
+      text-decoration: none;
+      text-align: center;
+    }
+    #message {
+      margin-top: 10px;
+      color: #ffdddd;
+      text-align: center;
+    }
+  </style>
+  <h2>Signup</h2>
+  <form id="signupForm">
+    <input name="username" placeholder="Username" required />
+    <input name="email" placeholder="Email" type="email" required />
+    <input name="password" placeholder="Password" type="password" required />
+    <button type="submit">Sign Up</button>
+  </form>
+  <a href="login.html">Already have an account? Login</a>
+  <p id="message"></p>
+`;
+
+document.body.innerHTML = signupHTML;
+
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+
+  try {
+    const res = await fetch("http://localhost:10000/signup", {
+      method: "POST",
+      body: formData,
+    });
+
+    const text = await res.text();
+
+    const messageEl = document.getElementById("message");
+    messageEl.innerText = text;
+
+    if (res.ok && text.includes("successful")) {
+      window.location.href = "/login.html";
+    }
+  } catch (err) {
+    alert("❌ Network error during signup");
+    console.error(err);
+  }
+});
