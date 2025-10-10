@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maths Quest</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ===============================
+       DESIGN TOKENS & GLOBALS
+    ================================*/
+    :root{
+      --bg: #212043;
+      --text: #D8E1FF;
+      --muted: #A9B3D6;
+      --glass-bg: rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.16);
+      --glass-highlight: rgba(255,255,255,0.35);
+      --cta: #6FE3FF;
+      --cta-hover: #9AF0FF;
+      --glow: rgba(0, 221, 255, 0.5);
+
+      /* Gradients */
+      --headline-grad: linear-gradient(90deg, #2BF2A2 5%, #56E646 49%, #00FFFF 100%);
+      --rollword-grad: linear-gradient(90deg, #00FF5D 0%, #00DDFF 70%);
+
+      /* Pricing */
+      --pricing-header: #5A47B8;
+      --panel-glass: rgba(255,255,255,0.08);
+      --panel-border: rgba(255,255,255,0.18);
+      --thumb-bg: rgba(255,255,255,0.14);
+      --thumb-glow: rgba(0, 221, 255, 0.35);
+
+      /* Testimonials local */
+      --ink:#E9E9F5;
+      --muted-2:#B9BAD5;
+      --card-edge:rgba(255,255,255,.08);
+      --card-glow:rgba(132,110,255,.25);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      line-height:1.5;
+    }
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    a{color:inherit}
+    img{max-width:100%;display:block}
+
+    /* Vignette */
+    body::before{
+      content:""; position:fixed; inset:-20vmax;
+      background: radial-gradient(60% 50% at 50% 20%, rgba(255,255,255,.05), transparent 60%);
+      pointer-events:none; z-index:-1;
+    }
+
+    /* Skip link */
+    .skip-link{
+      position:fixed; left:16px; top:10px; z-index:9999;
+      background:#0b1320; color:#fff; padding:10px 14px; border-radius:8px;
+      transform:translateY(-140%); transition:.2s ease;
+    }
+    .skip-link:focus{transform:none; outline:2px solid #00DDFF}
+
+    /* ===============================
+       NAVBAR (sticky pill)
+    ================================*/
+    header{position:relative; z-index:40}
+    .nav-wrap{
+      position:sticky; top:16px;
+      display:flex; justify-content:center;
+      padding:0 24px; z-index:40;
+    }
+    .nav{
+      width:min(1100px,100%); backdrop-filter: blur(12px) saturate(150%);
+      border:1px solid var(--glass-border);
+      border-radius:999px; padding:10px 16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      display:flex; align-items:center; gap:16px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font:800 18px/1 Poppins,system-ui;
+    }
+    .brand img{width:32px;height:32px}
+    nav ul{display:flex; gap:20px; list-style:none; margin:0 0 0 auto; padding:0}
+    nav a{
+      text-decoration:none; color:var(--text); opacity:.9; padding:10px 14px; border-radius:999px;
+    }
+    nav a:hover, nav a:focus-visible{opacity:1; box-shadow: 0 0 0 2px rgba(255,255,255,.18) inset}
+    .hamb{display:none;margin-left:auto}
+    .hamb button{
+      border:0; background:rgba(255,255,255,.1); color:#fff; width:40px; height:40px; border-radius:10px; cursor:pointer;
+    }
+    @media (max-width: 768px){
+      nav ul{display:none}
+      .nav.open nav ul{
+        display:flex; flex-direction:column; position:absolute; left:16px; right:16px; top:64px;
+        background:rgba(18,18,36,.9); border:1px solid var(--glass-border); border-radius:18px; padding:12px;
+      }
+      .hamb{display:block}
+    }
+
+    /* ===============================
+       HERO
+    ================================*/
+    .hero{min-height:88vh; display:grid; place-items:center; position:relative; padding:40px 0}
+    .hero .decor{position:absolute; width:280px; pointer-events:none; animation: floaty 10s ease-in-out infinite alternate; content-visibility:auto}
+    .decor-left{left:0; bottom:0; animation-duration:11s}
+    .decor-right{right:0; bottom:0; animation-duration:12s}
+    @keyframes floaty{from{transform:translateY(0)} to{transform:translateY(-12px)}}
+    @media (max-width:768px){.decor{display:none}}
+
+    .hero-card{
+      width:min(1000px, 92vw);
+      backdrop-filter: blur(16px) saturate(140%);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      border:1px solid var(--glass-border);
+      box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 var(--glass-highlight);
+      border-radius:55px;
+      padding: clamp(36px, 6vw, 64px);
+      text-align:center;
+    }
+    .headline-gradient{
+      background-image: var(--headline-grad);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      font:800 clamp(28px,4vw,44px)/1.1 Poppins,system-ui;
+      display:block;
+    }
+    .headline-word{
+      display:block; font:800 clamp(40px,6vw,72px)/1.05 Poppins,system-ui;
+    }
+    .rolling-words{
+      overflow:hidden; height:1.2em; margin-top:6px; font-weight:700;
+    }
+    .rolling-words .track{
+      display:inline-flex; gap:26px; white-space:nowrap; will-change:transform;
+      animation: roll 9.6s infinite;
+    }
+    .rolling-words .word{
+      background-image: var(--rollword-grad);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      font:800 20px/1 Poppins,system-ui;
+    }
+    @keyframes roll{
+      0%,20%{transform:translateX(0)}
+      30%,50%{transform:translateX(-25%)} /* Puzzle */
+      60%,80%{transform:translateX(-50%)} /* Journey */
+      90%,100%{transform:translateX(-75%)} /* Quest */
+    }
+    @media (prefers-reduced-motion: reduce){
+      .rolling-words .track{animation:none}
+    }
+    .lead{max-width:62ch; margin:14px auto 10px; opacity:.9}
+    .tagline{color:#c8ffd7; margin:0 0 18px}
+    .btn-cta{
+      display:inline-block; margin-top:6px; padding:14px 24px; border-radius:999px; text-decoration:none; font:700 16px/1 Poppins,system-ui;
+      background: linear-gradient(90deg, var(--cta-hover), var(--cta)); color:#071620; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .btn-cta:hover{transform:translateY(-2px); box-shadow: 0 16px 40px var(--glow)}
+    .btn-cta:active{transform:none}
+
+    /* ===============================
+       ABOUT (Section 2)
+    ================================*/
+    .about{padding: clamp(56px,8vw,96px) 0}
+    .about .about__grid{display:grid; gap:48px; grid-template-columns: 1.1fr 1fr; align-items:center}
+    .about__visual{content-visibility:auto}
+    .about__visual img{width:100%; height:auto}
+    .about__content h2{font:800 clamp(28px,4vw,48px)/1.1 Poppins,system-ui; margin:0 0 8px}
+    .subheading.gradient-welcome{
+      font:600 clamp(20px,2.6vw,32px)/1.2 Poppins,system-ui; margin:8px 0 16px;
+      background:linear-gradient(90deg, #FFFFFF 0%, #2563EB 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .about__body{max-width:62ch}
+    .em{position:relative; display:inline-block; background:var(--rollword-grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; transition:transform .18s ease, filter .18s ease; cursor:pointer; border:0; padding:0; font:inherit}
+    .em:hover,.em:focus-visible{transform:scale(.95); filter: drop-shadow(0 0 8px rgba(0,173,250,.35))}
+    .em.mq{background:linear-gradient(90deg,#FFFFFF 0%,#F59E0B 100%); -webkit-background-clip:text; background-clip:text}
+    .em.learning{background:linear-gradient(90deg,#0CFF04 0%,#098D00 100%); -webkit-background-clip:text; background-clip:text}
+    .em.journey{background:linear-gradient(90deg,#FFFFFF 0%,#00ADFA 100%); -webkit-background-clip:text; background-clip:text}
+    .em.connects{background:linear-gradient(90deg,#FFFFFF 0%,#2563EB 100%); -webkit-background-clip:text; background-clip:text}
+    @media (max-width:900px){.about .about__grid{grid-template-columns:1fr; text-align:center}}
+
+    /* Mini burst icons (spawned by JS) */
+    .burst{position:absolute; left:50%; top:50%; width:0; height:0; pointer-events:none}
+    .mini-icon{position:absolute; width:18px; height:18px; opacity:0}
+
+    /* ===============================
+       FEATURES (Section 3)
+    ================================*/
+    .features{ padding: clamp(56px, 8vw, 88px) 0; color: #D8E1FF; }
+    .features .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .features h2 { text-align: center; font-family: Poppins, system-ui, sans-serif; font-weight: 800; margin-bottom: 32px; }
+    .features__grid { display: grid; gap: clamp(16px, 3vw, 32px); grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    @media (max-width:1024px){ .features__grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width:640px){ .features__grid { grid-template-columns: 1fr; } }
+    .feature { position: relative; display: block; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.35); transform: translateZ(0); transition: transform .25s ease; content-visibility:auto}
+    .feature:hover, .feature:focus-visible { transform: translateY(-4px); }
+    .feature img { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+    .feature__panel { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px 22px; background: linear-gradient(180deg, rgba(20,22,45,0) 0%, rgba(20,22,45,.66) 38%, rgba(20,22,45,.85) 100%); backdrop-filter: blur(6px); color: #FFFFFF; border-top-left-radius: 20px; border-top-right-radius: 20px; transform: translateY(calc(100% - 82px)); transition: transform .28s cubic-bezier(.16,.84,.44,1), opacity .28s ease; }
+    .feature__panel h3 { font: 700 clamp(16px, 2.2vw, 20px)/1.2 Poppins, system-ui, sans-serif; margin: 0; }
+    .feature__panel p { margin: 10px 0 2px; opacity: .9; line-height: 1.45; font: 500 14px/1.45 Inter, system-ui, sans-serif; }
+    .feature:hover .feature__panel, .feature:focus-visible .feature__panel, .feature.open .feature__panel { transform: translateY(0); }
+    @media (prefers-reduced-motion: reduce){ .feature, .feature__panel { transition: none; } .feature__panel { transform: translateY(calc(100% - 82px)); } .feature:hover .feature__panel, .feature:focus-visible .feature__panel { transform: translateY(calc(100% - 82px)); } .feature__panel p { opacity: 1; } }
+
+    /* ===============================
+       PRICING (Section 4)
+    ================================*/
+    .pricing { padding: clamp(60px, 9vw, 96px) 0; color:#D8E1FF; }
+    .pricing .container { max-width: 1150px; margin:0 auto; padding:0 24px; }
+    .pricing h2 { text-align:center; font-family:Poppins,system-ui,sans-serif; font-weight:800; margin-bottom:24px; }
+    .seg { position:relative; display:inline-grid; grid-template-columns:1fr 1fr; width:min(420px, 90vw); margin: 8px auto 36px; padding:6px; border-radius:999px; background:rgba(255,255,255,.06); backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px var(--panel-border); }
+    .seg__btn { position:relative; z-index:1; appearance:none; background:transparent; border:0; padding:14px 18px; border-radius:999px; font:600 16px/1 Inter,system-ui,sans-serif; color:#cfd7ff; cursor:pointer; }
+    .seg__btn[aria-selected="true"] { color:#fff; }
+    .seg__btn:focus-visible { outline:2px solid #00DDFF; outline-offset:2px; border-radius:999px; }
+    .seg__thumb { position:absolute; inset:6px auto 6px 6px; width:calc(50% - 6px); border-radius:999px; background: var(--thumb-bg); box-shadow: 0 0 0 1px var(--panel-border), 0 8px 26px var(--thumb-glow); transform: translateX(0); transition: transform .28s cubic-bezier(.2,.8,.2,1); }
+    .seg[data-side="right"] .seg__thumb { transform: translateX(100%); }
+    .plans { position:relative; }
+    .planset { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(20px, 3vw, 36px); }
+    @media (max-width:800px){ .planset { grid-template-columns:1fr; } }
+    .plan { position:relative; border-radius:24px; overflow:hidden; background: var(--panel-glass); box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 0 0 1px var(--panel-border); transform: translateY(0); transition: transform .25s ease, box-shadow .25s ease; }
+    .plan:hover, .plan:focus-within { transform: translateY(-6px); box-shadow: 0 18px 42px rgba(0,0,0,.45); }
+    .plan__head { background: var(--pricing-header); color:#fff; text-align:center; padding:24px 16px 18px; }
+    .plan__tier { font:700 clamp(18px,2.6vw,22px)/1.1 Poppins,system-ui,sans-serif; margin:0; }
+    .plan__price { font:800 clamp(22px,4.5vw,34px)/1 Poppins,system-ui,sans-serif; margin:.2em 0; }
+    .plan__caption { margin:4px 0 0; opacity:.9; font:500 14px/1.3 Inter,system-ui,sans-serif; }
+    .plan__body { position:relative; padding:60px 18px 26px; background: rgba(255,255,255,.06); }
+    .plan__features { position:relative; margin:0 auto; padding:18px 18px; list-style:none; max-width: 420px; background:#fff; color:#1b1f3b; border-radius:18px; box-shadow:0 8px 24px rgba(0,0,0,.25); }
+    .plan__features li { padding:10px 2px; font:600 14px/1.35 Inter,system-ui,sans-serif; border-bottom:1px solid rgba(0,0,0,.08); }
+    .plan__features li:last-child { border-bottom:0; }
+    .planset[hidden] { display:block; visibility:hidden; height:0; overflow:hidden; }
+    .planset[data-anim="in"] { animation: planIn .32s cubic-bezier(.2,.8,.2,1); }
+    .planset[data-anim="out"] { animation: planOut .28s ease; }
+    @keyframes planIn { from { opacity:0; transform: translateY(10px);} to { opacity:1; transform:none; } }
+    @keyframes planOut { from { opacity:1; transform:none;} to { opacity:0; transform: translateY(10px);} }
+    @media (prefers-reduced-motion: reduce){ .seg__thumb, .planset { transition:none; animation:none; } }
+
+    /* ===============================
+       TESTIMONIALS Sticky Stack (Section 5)
+    ================================*/
+    .section--sticky-stack{ background: var(--bg); color: var(--ink); position: relative; }
+    .section--sticky-stack .section-title{ text-align:center; font-size: clamp(1.6rem, 2vw + 1rem, 2.4rem); font-weight: 800; letter-spacing:.2px; margin: 6rem 0 2rem; }
+    .section--sticky-stack .stack-shell{ position: relative; }
+    .stack-pin{ position: sticky; top: 0; height: 100vh; display: grid; place-items: center; padding: clamp(16px, 4vw, 32px); }
+    .stack-pin::before{ content:""; position:absolute; inset:0; background: radial-gradient(60% 50% at 50% 60%, var(--card-glow), transparent 60%); pointer-events:none; }
+    .t-group{ --p: 0; position: absolute; inset: auto 0 5vh 0; margin: 0 auto; width: min(1100px, 92vw); display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: clamp(14px, 2.2vw, 24px); padding: clamp(10px, 2vw, 16px); opacity: var(--p); transform: translateY(calc((1 - var(--p)) * 60px)) scale(calc(.98 + var(--p) * .02)); filter: blur(calc(6px * (1 - var(--p)))); transition: opacity .2s linear; pointer-events: none; }
+    .t-group[aria-hidden="false"]{ pointer-events:auto; }
+    .t-group[data-step="0"]{ z-index: 10; } .t-group[data-step="1"]{ z-index: 11; } .t-group[data-step="2"]{ z-index: 12; }
+    .t-card{ background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)); border: 1px solid var(--card-edge); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04); padding: clamp(16px, 2.6vw, 22px); display:flex; flex-direction:column; gap: 14px; min-height: 180px; backdrop-filter: blur(6px); }
+    .t-stars{ font-size: 14px; letter-spacing: 2px; opacity:.9; }
+    .t-card blockquote{ margin: 0; line-height: 1.55; color: var(--ink); }
+    .t-meta{ display:flex; align-items:center; gap: 12px; margin-top: auto; }
+    .t-avatar{ width: 36px; height: 36px; border-radius: 50%; display:grid; place-items:center; font-weight:700; font-size: 12px; color:#121127; background: #D9D7FF; border: 1px solid rgba(0,0,0,.1); }
+    .t-name{ font-weight:700; }
+    .t-role{ color: var(--muted-2); font-size: 12px; }
+    .stack-steps .step{ height: 120vh; }
+    @media (prefers-reduced-motion: reduce){ .stack-pin{ position: static; height: auto; } .t-group{ position: static; opacity: 1 !important; transform: none !important; filter: none !important; margin-bottom: 24px; } .stack-steps{ display:none; } }
+
+    /* ===============================
+       CONTACT (Section 6)
+    ================================*/
+    .contact{ padding: clamp(64px, 9vw, 110px) 0; color:#D8E1FF; position:relative; overflow:hidden; }
+    .contact .container{ max-width: 1160px; margin:0 auto; padding:0 24px; }
+    #c-title{ text-align:center; font:800 clamp(28px,5vw,44px)/1.1 Poppins,system-ui; }
+    .c-sub{ text-align:center; opacity:.85; margin:8px 0 32px; }
+    .contact__grid{ display:grid; grid-template-columns: 1fr 1.35fr; gap: clamp(24px,4vw,44px); align-items:start; }
+    @media (max-width: 920px){ .contact__grid{ grid-template-columns:1fr; } }
+    .contact__info h3{ font:700 22px/1.2 Poppins,system-ui; margin: 8px 0 16px; }
+    .contact__info dt{ margin-top:16px; opacity:.7; font-weight:600; }
+    .contact__info dd{ margin:6px 0 0 0; }
+    .contact__info a{ color:#9fd3ff; text-decoration:none; }
+    .contact__info a:hover{ text-decoration:underline; }
+    .contact__form{ position:relative; padding: clamp(18px,2.2vw,24px); border-radius:20px; background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.16); backdrop-filter: blur(10px); box-shadow: 0 20px 50px rgba(0,0,0,.35);}
+    .form__bg{ position:absolute; inset:-20px; border-radius:28px; background: radial-gradient(1200px 1200px at var(--mx,50%) var(--my,50%), rgba(0,221,255,.10), transparent 55%); filter: blur(22px); pointer-events:none;}
+    .field{ display:block; margin-bottom:14px; }
+    .field input, .field textarea{ width:100%; padding:16px 18px; border-radius:14px; border:1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.06); color:#fff; outline:none; transition: box-shadow .25s ease, border-color .25s ease, transform .2s ease; }
+    .field input::placeholder, .field textarea::placeholder{ color: rgba(255,255,255,.6); }
+    .field input:focus, .field textarea:focus{ border-color:#00DDFF; box-shadow: 0 0 0 3px rgba(0,221,255,.25), 0 12px 30px rgba(0,0,0,.25); transform: translateY(-1px);}
+    .btn-send{ position:relative; display:inline-flex; align-items:center; justify-content:center; gap:10px; margin-top: 8px; padding: 14px 22px; width:min(360px, 100%); border-radius:999px; border:0; cursor:pointer; color:#081a25; font:700 16px/1 Poppins,system-ui; background: linear-gradient(90deg, #9AF0FF, #6FE3FF); box-shadow: 0 10px 26px rgba(0,136,204,.35); transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+    .btn-send:hover{ transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,136,204,.45); }
+    .btn-send:focus-visible{ outline: 2px solid #00DDFF; outline-offset:3px; }
+    .plane{ width:18px; height:18px; fill:#081a25; transform: translateX(0) translateY(0) rotate(0deg); transition: transform .35s ease; }
+    .form__note{ margin-top:12px; color:#B8FFDF; }
+    .orbs{ position:absolute; inset:0; pointer-events:none; }
+    .orb{ position:absolute; width:210px; height:210px; border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(0,221,255,.25), rgba(255,255,255,.04) 60%, transparent 70%); filter: blur(10px); animation: float 16s ease-in-out infinite; opacity:.55; }
+    .orb:nth-child(1){ left: -60px; top: 10%; animation-duration: 18s; }
+    .orb:nth-child(2){ right: -80px; top: 40%; animation-delay: -4s; }
+    .orb:nth-child(3){ left: 20%; bottom: -60px; animation-duration: 22s; }
+    @media (prefers-reduced-motion: reduce){ .orbs .orb{ animation:none; } .btn-send, .field input, .field textarea{ transition:none; } }
+
+    .sr-only{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+
+    /* ===============================
+       FOOTER (Section 7)
+    ================================*/
+    .site-footer{ position: relative; overflow: clip; color:#D8E1FF; padding-top: clamp(48px,6vw,72px); }
+    .site-footer .container{ max-width: 1200px; margin:0 auto; padding:0 24px; }
+    .footer__brand{ font: 800 clamp(22px,4vw,32px)/1.1 Poppins,system-ui; margin: 8px 0 6px; }
+    .footer__tagline{ max-width: 46ch; opacity:.9; margin: 0 0 22px; }
+    .footer__nav{ display:grid; gap: clamp(24px,4vw,52px); grid-template-columns: 1fr repeat(3, minmax(170px, 1fr)); align-items:start; padding: 10px 0 clamp(38px,6vw,56px); }
+    .footer__col ul{ list-style:none; padding:0; margin: 10px 0 0; }
+    .footer__heading{ font: 700 18px/1.2 Poppins,system-ui; margin:0; }
+    .footer__col a{ display:inline-block; padding: 8px 0; color:#D8E1FF; text-decoration:none; opacity:.9; position:relative; transform: translateZ(0); }
+    .footer__col a::after{ content:""; position:absolute; left:0; bottom:0; height:2px; width:0%; background: linear-gradient(90deg,#9AF0FF,#6FE3FF); transition: width .22s ease; }
+    .footer__col a:hover, .footer__col a:focus-visible{ opacity:1; }
+    .footer__col a:hover::after, .footer__col a:focus-visible::after{ width:100%; }
+    @media (max-width: 900px){ .footer__nav{ grid-template-columns: 1fr; } .footer__brand{ margin-bottom: 8px; } }
+    .footer__arc{ pointer-events:none; position:absolute; left:0; right:0; bottom:-1px; height:min(220px, 24vw); background: radial-gradient(120% 100% at 50% 120%, rgba(0,221,255,.35) 0%, rgba(93,166,214,.55) 28%, rgba(255,255,255,.18) 48%, rgba(255,255,255,0) 70%); mask: linear-gradient(#000, transparent 85%); animation: aurora 6s ease-in-out infinite alternate; filter: blur(0.2px); }
+    @keyframes aurora{ 0%{ background-position: 50% 100%; } 100%{ background-position: 54% 100%; } }
+    .footer__bottom{ display:flex; align-items:center; justify-content:center; gap: 12px; text-align:center; padding: 16px 24px 22px; border-top: 1px solid rgba(255,255,255,.08); }
+    .copyright{ margin:0; opacity:.85; }
+    .to-top{ margin-left: 10px; border:0; cursor:pointer; border-radius:999px; width:38px; height:38px; display:grid; place-items:center; background:rgba(255,255,255,.12); backdrop-filter: blur(6px); box-shadow: 0 6px 18px rgba(0,0,0,.35); transition: transform .18s ease, box-shadow .18s ease, background .18s ease, opacity .2s ease; opacity:0; pointer-events:none; }
+    .to-top svg{ width:20px; height:20px; fill:#D8E1FF; transform: translateY(1px) rotate(-90deg); }
+    .to-top:hover{ transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.5); background:rgba(255,255,255,.18); }
+    .site-footer [data-reveal]{ opacity:0; transform: translateY(12px); }
+    .revealed{ opacity:1 !important; transform:none !important; transition: opacity .38s ease, transform .38s ease; }
+    @media (prefers-reduced-motion: reduce){ .footer__arc{ animation:none; } .to-top, .revealed{ transition:none !important; } }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#home">Skip to content</a>
+
+  <header>
+    <div class="nav-wrap">
+      <div class="nav" id="nav">
+        <div class="brand">
+          <img src="assets/ChatGPT Image Oct 10, 2025, 08_41_59 AM.png" alt="" />
+          <span>Maths Quest</span>
+        </div>
+        <nav aria-label="Primary">
+          <ul>
+            <li><a href="#home" aria-current="page">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+          </ul>
+        </nav>
+        <div class="hamb"><button id="nav-toggle" aria-label="Toggle menu">☰</button></div>
+      </div>
+    </div>
+  </header>
+
+  <main id="home">
+    <!-- ========== Section 1: HERO ========== -->
+    <section class="hero" aria-label="Hero">
+      <div class="hero-card">
+        <p class="eyebrow sr-only">Learn math the fun way</p>
+        <h1>
+          <span class="headline-gradient">Turn math into a</span>
+          <span class="headline-word" aria-hidden="true" id="headline-word">Game</span>
+        </h1>
+
+        <div class="rolling-words" aria-hidden="true">
+          <div class="track">
+            <span class="word">Game</span>
+            <span class="word">Puzzle</span>
+            <span class="word">Journey</span>
+            <span class="word">Quest</span>
+          </div>
+        </div>
+        <div class="sr-only" aria-live="polite" id="rolling-words-live">Game</div>
+
+        <p class="lead">Earn points, unlock levels, and master concepts through interactive games and challenges.</p>
+        <p class="tagline">Let’s learn, play and achieve.</p>
+        <a class="btn-cta" href="#pricing">Try Now</a>
+      </div>
+
+      <img class="decor decor-left" src="./assets/decor-left.png" alt="" aria-hidden="true"/>
+      <img class="decor decor-right" src="./assets/decor-right.png" alt="" aria-hidden="true"/>
+    </section>
+
+    <!-- ========== Section 2: ABOUT ========== -->
+    <section id="about" class="about" aria-labelledby="about-title">
+      <div class="about__grid container">
+        <div class="about__visual">
+          <img src="./assets/students.png" alt="Two cheerful students with backpacks" loading="lazy" />
+        </div>
+        <div class="about__content">
+          <h2 id="about-title">About</h2>
+          <p class="subheading gradient-welcome">Welcome Math Explorer!</p>
+          <p class="about__body">
+            <button type="button" class="em mq" aria-label="Show icons for ‘Math Quest’">Math Quest</button>
+            transforms
+            <button type="button" class="em learning" aria-label="Show icons for ‘learning’">learning</button>
+            into an exciting
+            <button type="button" class="em journey" aria-label="Show icons for ‘journey’">journey</button>
+            that
+            <button type="button" class="em connects" aria-label="Show icons for ‘connects’">connects</button>
+            students, teachers, and parents.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Section 3: FEATURES ========== -->
+    <section id="features" class="features" aria-labelledby="features-title">
+      <div class="container">
+        <h2 id="features-title">Features</h2>
+        <div class="features__grid">
+          <!-- 1 -->
+          <a class="feature" href="#features" aria-label="Read about Gamified Experience">
+            <img src="./assets/features/gamified.jpg" alt="Neon game world for Gamified Experience" loading="lazy" />
+            <div class="feature__panel">
+              <h3>Gamified Experience</h3>
+              <p>Turn math into an adventure! Complete challenges, collect rewards, and level up your skills.</p>
+            </div>
+          </a>
+          <!-- 2 -->
+          <a class="feature" href="#features" aria-label="Read about AI tutor Chat">
+            <img src="./assets/features/ai-tutor.jpg" alt="Friendly robot tutor in neon interface" loading="lazy" />
+            <div class="feature__panel">
+              <h3>AI tutor Chat</h3>
+              <p>Your personal math assistant is here! Get hints, tips, and answers instantly.</p>
+            </div>
+          </a>
+          <!-- 3 -->
+          <a class="feature" href="#features" aria-label="Read about Step by step solving">
+            <img src="./assets/features/step-by-step.jpg" alt="Neon staircase of problem steps" loading="lazy" />
+            <div class="feature__panel">
+              <h3>Step by step solving</h3>
+              <p>See every step of the solution and master problem-solving confidently.</p>
+            </div>
+          </a>
+          <!-- 4 -->
+          <a class="feature" href="#features" aria-label="Read about Progress Tracking">
+            <img src="./assets/features/progress.jpg" alt="Holographic dashboard with badges and charts" loading="lazy" />
+            <div class="feature__panel">
+              <h3>Progress Tracking</h3>
+              <p>See your growth in real time and stay motivated to reach the next level.</p>
+            </div>
+          </a>
+          <!-- 5 -->
+          <a class="feature" href="#features" aria-label="Read about Personalized Learning">
+            <img src="./assets/features/personalized.jpg" alt="Quiz interface with glowing options" loading="lazy" />
+            <div class="feature__panel">
+              <h3>Personalized Learning</h3>
+              <p>Try quizzes after each lesson and see how much you’ve learned in real time.</p>
+            </div>
+          </a>
+          <!-- 6 -->
+          <a class="feature" href="#features" aria-label="Read about Multilingual Support">
+            <img src="./assets/features/multilingual.jpg" alt="Glowing globe with language bubbles" loading="lazy" />
+            <div class="feature__panel">
+              <h3>Multilingual Support</h3>
+              <p>Learn math in your preferred language and understand concepts easily.</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Section 4: PRICING ========== -->
+    <section id="pricing" class="pricing" aria-labelledby="pricing-title">
+      <div class="container">
+        <h2 id="pricing-title">Pricing</h2>
+
+        <div class="seg" role="tablist" aria-label="Pricing audience" data-side="left">
+          <button class="seg__btn" role="tab" aria-selected="true" data-role="student" id="tab-student">Student</button>
+          <button class="seg__btn" role="tab" aria-selected="false" data-role="teacher" id="tab-teacher">Teacher</button>
+          <span class="seg__thumb" aria-hidden="true"></span>
+        </div>
+
+        <div class="plans" data-active="student" aria-live="polite">
+          <!-- Student set -->
+          <div class="planset planset--student" data-planset="student">
+            <article class="plan">
+              <header class="plan__head">
+                <h3 class="plan__tier">Basic</h3>
+                <p class="plan__price">Free</p>
+                <p class="plan__caption">Essential to get started</p>
+              </header>
+              <div class="plan__body">
+                <ul class="plan__features">
+                  <li>Core lessons</li><li>Basic practice problems</li><li>Basic progress tracking</li><li>Community access (limited)</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="plan plan--pro">
+              <header class="plan__head">
+                <h3 class="plan__tier">Pro</h3>
+                <p class="plan__price">Rs.1,000</p>
+                <p class="plan__caption">Everything in Basic plus more</p>
+              </header>
+              <div class="plan__body">
+                <ul class="plan__features">
+                  <li>Unlimited lessons</li><li>Practice problems</li><li>AI tutor chat</li><li>Priority support</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+
+          <!-- Teacher set -->
+          <div class="planset planset--teacher" data-planset="teacher" hidden>
+            <article class="plan">
+              <header class="plan__head">
+                <h3 class="plan__tier">Basic</h3>
+                <p class="plan__price">Free</p>
+                <p class="plan__caption">Essential to get started</p>
+              </header>
+              <div class="plan__body">
+                <ul class="plan__features">
+                  <li>Up to 10 students</li><li>Limited assignments</li><li>Basic teacher dashboard</li><li>Community access (limited)</li>
+                </ul>
+              </div>
+            </article>
+
+            <article class="plan plan--pro">
+              <header class="plan__head">
+                <h3 class="plan__tier">Pro</h3>
+                <p class="plan__price">Rs.4,000</p>
+                <p class="plan__caption">Everything in Basic plus more</p>
+              </header>
+              <div class="plan__body">
+                <ul class="plan__features">
+                  <li>Up to 25 students</li><li>Custom assignments</li><li>Custom teacher dashboard</li><li>Priority support</li>
+                </ul>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Section 5: TESTIMONIALS Sticky Stack ========== -->
+    <section id="testimonials" class="section section--sticky-stack" aria-labelledby="testimonials-title">
+      <div class="stack-shell">
+        <h2 id="testimonials-title" class="section-title">What They’re Saying</h2>
+
+        <div class="stack-pin" role="list" aria-live="polite">
+          <!-- Group 1 -->
+          <div class="t-group" data-step="0" aria-label="Student stories" role="group">
+            <article class="t-card" role="listitem">
+              <div class="t-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>“MathQuest helped me go from failing algebra to getting an A+. The step-by-step explanations are amazing!”</blockquote>
+              <footer class="t-meta"><span class="t-avatar">SM</span><div><div class="t-name">Sahan Manujaya</div><div class="t-role">Grade 07 Student</div></div></footer>
+            </article>
+            <article class="t-card" role="listitem">
+              <div class="t-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>“Math Quest is the first app that actually makes me want to practice daily. My grades and my confidence both went up!”</blockquote>
+              <footer class="t-meta"><span class="t-avatar">KP</span><div><div class="t-name">Kulitha Proboda</div><div class="t-role">Grade 09 Student</div></div></footer>
+            </article>
+          </div>
+
+          <!-- Group 2 -->
+          <div class="t-group" data-step="1" aria-label="Teacher perspectives" role="group" aria-hidden="true">
+            <article class="t-card" role="listitem">
+              <div class="t-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>“As a teacher, I love how MathGuide adapts to each student’s needs. It’s like having a personal tutor for every child.”</blockquote>
+              <footer class="t-meta"><span class="t-avatar">SN</span><div><div class="t-name">Sarath Nishantha</div><div class="t-role">Math Teacher</div></div></footer>
+            </article>
+            <article class="t-card" role="listitem">
+              <div class="t-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>“It bridges the gap between fun and learning perfectly. My students show real progress without feeling pressured.”</blockquote>
+              <footer class="t-meta"><span class="t-avatar">IF</span><div><div class="t-name">Iresha Fernando</div><div class="t-role">Math Teacher</div></div></footer>
+            </article>
+          </div>
+
+          <!-- Group 3 -->
+          <div class="t-group" data-step="2" aria-label="Parent voices" role="group" aria-hidden="true">
+            <article class="t-card" role="listitem">
+              <div class="t-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>“The gamification makes learning fun! My daughter actually looks forward to doing math homework now.”</blockquote>
+              <footer class="t-meta"><span class="t-avatar">LH</span><div><div class="t-name">Lisari Hewage</div><div class="t-role">Parent</div></div></footer>
+            </article>
+            <article class="t-card" role="listitem">
+              <div class="t-stars" aria-hidden="true">★★★★★</div>
+              <blockquote>“The parent dashboard is so helpful, I can monitor how my son is doing and celebrate his achievements together.”</blockquote>
+              <footer class="t-meta"><span class="t-avatar">TS</span><div><div class="t-name">Taniya Silva</div><div class="t-role">Parent</div></div></footer>
+            </article>
+          </div>
+        </div>
+
+        <div class="stack-steps" aria-hidden="true">
+          <div class="step" data-index="0"></div>
+          <div class="step" data-index="1"></div>
+          <div class="step" data-index="2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Section 6: CONTACT ========== -->
+    <section id="contact" class="contact" aria-labelledby="c-title">
+      <div class="container">
+        <h2 id="c-title">Get in Touch</h2>
+        <p class="c-sub">Have questions? We’d love to hear from you.</p>
+
+        <div class="contact__grid">
+          <aside class="contact__info">
+            <h3>Contact Information</h3>
+            <dl>
+              <dt>Email</dt><dd><a href="mailto:mathquestgo@gmail.com">mathquestgo@gmail.com</a></dd>
+              <dt>Phone</dt><dd><a href="tel:+94773642783">+94 77 364 2783</a></dd>
+              <dt>Support Hours</dt><dd>Mon–Fri 9AM–6PM</dd>
+            </dl>
+          </aside>
+
+          <form class="contact__form" id="contact-form" novalidate>
+            <div class="form__bg" aria-hidden="true"></div>
+            <label class="field"><span class="sr-only">Name</span><input type="text" name="name" placeholder="Name" required /></label>
+            <label class="field"><span class="sr-only">Email</span><input type="email" name="email" placeholder="Email" required /></label>
+            <label class="field field--area"><span class="sr-only">Message</span><textarea name="message" placeholder="Message" rows="5" required></textarea></label>
+            <button class="btn-send" type="submit" aria-live="polite">
+              <span class="btn-label">Send Message</span>
+              <svg class="plane" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12L22 2l-7 20-3-8-8-3z"/></svg>
+            </button>
+            <p class="form__note" role="status" aria-live="polite" hidden>Thanks! We’ll get back to you soon.</p>
+          </form>
+        </div>
+      </div>
+
+      <div class="orbs" aria-hidden="true">
+        <span class="orb"></span><span class="orb"></span><span class="orb"></span>
+      </div>
+    </section>
+    <!-- ===== /Contact ===== -->
+  </main>
+
+  <!-- ========== Section 7: FOOTER ========== -->
+  <footer id="footer" class="site-footer" aria-labelledby="footer-title">
+    <div class="footer__inner container">
+      <h2 id="footer-title" class="footer__brand">Math Quest</h2>
+      <p class="footer__tagline">Making mathematics accessible and enjoyable for students worldwide.</p>
+
+      <nav class="footer__nav" aria-label="Footer links">
+        <div class="footer__col">
+          <h3 class="footer__heading">Quick Links</h3>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#contact">Contact us</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <h3 class="footer__heading">Support</h3>
+          <ul>
+            <li><a href="#" aria-label="Open Help Center">Help Center</a></li>
+            <li><a href="#" aria-label="Open Community">Community</a></li>
+            <li><a href="#" aria-label="Open Documentation">Documentation</a></li>
+            <li><a href="#" aria-label="Open GuildLines">GuildLines</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <h3 class="footer__heading">Legal</h3>
+          <ul>
+            <li><a href="#" aria-label="Read Terms of service">Terms of service</a></li>
+            <li><a href="#" aria-label="Read Privacy Policy">Privacy Policy</a></li>
+            <li><a href="#" aria-label="Read Refund Policy">Refund Policy</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="footer__arc" aria-hidden="true"></div>
+
+    <div class="footer__bottom">
+      <p class="copyright">
+        ©<span data-year>2025</span> MathQuest. All rights reserved.<br/>
+        Team ARITHMA @IIT InfoSchol 2026 JAN
+      </p>
+      <button class="to-top" type="button" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5l7 7-1.4 1.4L13 9.8V19h-2V9.8L6.4 13.4 5 12z"/></svg>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    /* ===============================
+       NAV: Mobile toggle
+    ================================*/
+    (function(){
+      const nav = document.getElementById('nav');
+      const btn = document.getElementById('nav-toggle');
+      if(!nav || !btn) return;
+      btn.addEventListener('click', ()=>{
+        nav.classList.toggle('open');
+        document.documentElement.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+      });
+    })();
+
+    /* ===============================
+       HERO: rolling words + aria-live
+    ================================*/
+    (function(){
+      const words = ["Game","Puzzle","Journey","Quest"];
+      const live = document.getElementById('rolling-words-live');
+      const head = document.getElementById('headline-word');
+      let i = 0;
+      setInterval(()=>{
+        i = (i+1) % words.length;
+        live.textContent = words[i];
+        head.textContent = words[i];
+      }, 2400); // 2.0s + 0.4s pause vibe
+    })();
+
+    /* ===============================
+       ABOUT: Icon burst on hover/tap
+    ================================*/
+    (function(){
+      const sets = {
+        mq: ['⭐','🏆','🧩','🎮','👑','🎯'],
+        learning: ['📘','💡','⚗️','📏','🧪','🎓'],
+        journey: ['🗺️','🧭','🚩','📍','👣','➿'],
+        connects: ['👥','💬','🔗','🕸️','🤝','✉️']
+      };
+      function createBurst(el, list){
+        let c = el.querySelector('.burst'); if(!c){ c = document.createElement('span'); c.className='burst'; el.appendChild(c); }
+        const n = 6 + Math.floor(Math.random()*4);
+        for(let j=0;j<n;j++){
+          const s = document.createElement('span');
+          s.className='mini-icon'; s.textContent = list[j % list.length];
+          const ang = Math.random()*Math.PI*2, dist = 30 + Math.random()*50;
+          const x = Math.cos(ang)*dist, y = Math.sin(ang)*dist;
+          s.style.transform = `translate(${x}px, ${y}px)`; s.style.opacity = '1';
+          s.style.transition = `transform .7s cubic-bezier(.16,.84,.44,1), opacity .7s ease`;
+          c.appendChild(s);
+          requestAnimationFrame(()=>{ s.style.transform = `translate(${x*1.1}px, ${y*1.1}px)`; s.style.opacity='.0'; });
+          setTimeout(()=> s.remove(), 800);
+        }
+      }
+      const els = document.querySelectorAll('.em.mq, .em.learning, .em.journey, .em.connects');
+      const last = new Map();
+      els.forEach(el=>{
+        const key = [...el.classList].find(k=>sets[k]);
+        const icons = sets[key];
+        const fire = ()=>{
+          const t = last.get(el)||0; const now = performance.now();
+          if(now - t < 600) return; last.set(el, now);
+          createBurst(el, icons);
+        };
+        el.addEventListener('mouseenter', fire);
+        el.addEventListener('focusin', fire);
+        el.addEventListener('touchstart', fire, {passive:true});
+      });
+    })();
+
+    /* ===============================
+       FEATURES: Touch open
+    ================================*/
+    (function(){
+      const cards = document.querySelectorAll('.feature');
+      cards.forEach(card=>{
+        card.addEventListener('touchstart', ()=>{
+          cards.forEach(c=>{ if(c!==card) c.classList.remove('open'); });
+          card.classList.add('open'); setTimeout(()=> card.classList.remove('open'), 1500);
+        }, {passive:true});
+      });
+    })();
+
+    /* ===============================
+       PRICING: segmented toggle (flip)
+    ================================*/
+    (function(){
+      const seg = document.querySelector('.seg'); if(!seg) return;
+      const btnStudent = document.getElementById('tab-student');
+      const btnTeacher = document.getElementById('tab-teacher');
+      const setStudent = document.querySelector('.planset--student');
+      const setTeacher = document.querySelector('.planset--teacher');
+      let current = 'student';
+      const apply = (next)=>{
+        if(next === current) next = (current==='student') ? 'teacher' : 'student';
+        const from = current==='student' ? setStudent : setTeacher;
+        const to   = next==='student' ? setStudent : setTeacher;
+        btnStudent.setAttribute('aria-selected', next==='student');
+        btnTeacher.setAttribute('aria-selected', next==='teacher');
+        seg.dataset.side = (next==='student') ? 'left' : 'right';
+        from.dataset.anim='out'; to.hidden=false; to.dataset.anim='in';
+        setTimeout(()=>{ from.hidden=true; from.removeAttribute('data-anim'); to.removeAttribute('data-anim'); }, 320);
+        current = next;
+      };
+      const flip = ()=> apply(current==='student' ? 'teacher' : 'student');
+      btnStudent.addEventListener('click', flip);
+      btnTeacher.addEventListener('click', flip);
+      [btnStudent, btnTeacher].forEach(b=>{
+        b.addEventListener('keydown', e=>{
+          if(['Enter',' '].includes(e.key)){ e.preventDefault(); flip(); }
+          if(['ArrowRight','ArrowLeft'].includes(e.key)){ e.preventDefault(); flip(); }
+        });
+      });
+    })();
+
+    /* ===============================
+       TESTIMONIALS sticky stack
+    ================================*/
+    (function(){
+      const section = document.querySelector('#testimonials.section--sticky-stack');
+      if(!section) return;
+      const groups = Array.from(section.querySelectorAll('.t-group'));
+      const steps  = Array.from(section.querySelectorAll('.stack-steps .step'));
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduce){ groups.forEach(g => g.style.setProperty('--p', '1')); return; }
+      const clamp01 = v => Math.max(0, Math.min(1, v));
+      let ticking = false;
+      function update(){
+        const vh = window.innerHeight || 1;
+        steps.forEach((step, i) => {
+          const rect = step.getBoundingClientRect();
+          const raw = 1 - (rect.top / vh);
+          const p = clamp01(raw);
+          groups[i].style.setProperty('--p', p.toFixed(4));
+          const visible = p > 0 || (rect.bottom <= vh && rect.top <= 0);
+          groups[i].setAttribute('aria-hidden', visible ? 'false' : 'true');
+        });
+        ticking = false;
+      }
+      function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
+      update(); window.addEventListener('scroll', onScroll, {passive:true}); window.addEventListener('resize', update);
+    })();
+
+    /* ===============================
+       CONTACT: reveal + pointer glow + plane
+    ================================*/
+    (function(){
+      const sec = document.getElementById('contact'); if(!sec) return;
+      const container = sec.querySelector('.contact__form');
+      const bg = sec.querySelector('.form__bg');
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ sec.style.opacity = 1; sec.style.transform = 'none'; } });
+      }, {threshold: .2});
+      sec.style.opacity=0; sec.style.transform='translateY(24px)'; io.observe(sec);
+      container.addEventListener('pointermove', e=>{
+        const r = container.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width * 100).toFixed(2) + '%';
+        const y = ((e.clientY - r.top) / r.height * 100).toFixed(2) + '%';
+        bg.style.setProperty('--mx', x); bg.style.setProperty('--my', y);
+      });
+      const form = document.getElementById('contact-form');
+      const note = form.querySelector('.form__note'); const plane = form.querySelector('.plane');
+      form.addEventListener('submit', ev=>{
+        ev.preventDefault();
+        if(!form.checkValidity()){ form.reportValidity(); return; }
+        plane.style.transform='translateX(8px) translateY(-16px) rotate(25deg)';
+        form.querySelector('.btn-label').textContent='Sending…';
+        setTimeout(()=>{
+          form.reset(); form.querySelector('.btn-label').textContent='Send Message'; plane.style.transform='';
+          note.hidden=false; note.textContent='Thanks! We’ll get back to you soon.'; setTimeout(()=> note.hidden=true, 2600);
+        }, 900);
+      });
+    })();
+
+    /* ===============================
+       FOOTER: year + reveal + back to top
+    ================================*/
+    (function(){
+      const footer = document.getElementById('footer'); if(!footer) return;
+      const yEl = footer.querySelector('[data-year]'); if(yEl){ yEl.textContent = new Date().getFullYear(); }
+      const revealEls = []; const brand = footer.querySelector('.footer__brand'); const tag = footer.querySelector('.footer__tagline');
+      const cols = footer.querySelectorAll('.footer__col, .footer__heading, .footer__col a');
+      [brand, tag, ...cols].forEach(el=>{ if(el){ el.setAttribute('data-reveal',''); revealEls.push(el); }});
+      let revealed = false;
+      const io = new IntersectionObserver((entries)=>{
+        if(revealed) return;
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            revealed = true;
+            revealEls.forEach((el,i)=> setTimeout(()=> el.classList.add('revealed'), i*40));
+          }
+        });
+      }, {threshold:.15});
+      io.observe(footer);
+
+      const btn = footer.querySelector('.to-top');
+      const show = ()=>{ btn.style.opacity='1'; btn.style.pointerEvents='auto'; };
+      const hide = ()=>{ btn.style.opacity='0'; btn.style.pointerEvents='none'; };
+      const visObs = new IntersectionObserver((ents)=>{ ents.forEach(e=> e.isIntersecting ? show() : hide()); }, {rootMargin:'0px 0px -80% 0px'});
+      visObs.observe(footer);
+      btn.addEventListener('click', ()=>{
+        window.scrollTo({top:0, behavior: (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth')});
+      });
+    })();
+  </script>
+</body>
+</html>
