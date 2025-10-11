@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Quest – Making Math Fun</title>
+  <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=WU1sKUgNvNaNJF1GMpxliP6lONaE3BKHYQj_zMyk6_EkP69h7dAJ5ZKXvyhp08oBB53NnFMca80uRQ8xBQ_aL1Ig101vTyujxq927x-Ya9e6VqetAUxQM6Tdzs0JBS-54cW6DVGQUVKyjKSiR_s5wUl-DeXGsMs4FJyQrgl_k8GhR9kRh_mvgUdbLCtxrkSId1dM2Y9snJgMNa7Y_Bki30P0u7hKVGQ19ntVzJTjznRwyV2DWMXMe6J1oSpsThS-" charset="UTF-8"></script><style>
+    /* Base styling */
+    :root {
+      --bg-color: #0d1333;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --nav-bg: rgba(255, 255, 255, 0.1);
+      --accent-grad: linear-gradient(90deg, #50ffb1, #c8fd3d, #00d0ff);
+      --text-color: #e4e9f5;
+      --primary-radius: 20px;
+      --transition-fast: 0.3s ease;
+      --transition-smooth: cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      scroll-behavior: smooth;
+      line-height: 1.6;
+      font-size: 18px;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    h1, h2, h3, h4 {
+      font-weight: 600;
+      margin-bottom: 0.5em;
+      color: #fff;
+    }
+
+    /* Navigation bar */
+    #navbar {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1.5rem;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      width: calc(100% - 2rem);
+      max-width: 900px;
+    }
+
+    #navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #navbar .logo img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    #navbar .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    #navbar .nav-link {
+      position: relative;
+      padding: 0.5rem;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #d7e0ff;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+
+    #navbar .nav-link:hover {
+      color: #ffffff;
+    }
+
+    #navbar .nav-link.active {
+      color: #00d0ff;
+    }
+
+    #navbar .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      height: 2px;
+      background: var(--accent-grad);
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform var(--transition-fast);
+    }
+
+    #navbar .nav-link:hover::after,
+    #navbar .nav-link.active::after {
+      transform: scaleX(1);
+    }
+
+    /* Hero section */
+    #home {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #home::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('Assets/hero.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(1.0) blur(0px);
+      z-index: -2;
+    }
+
+    #home .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: -1;
+    }
+
+    #home .hero-card {
+      max-width: 650px;
+      width: 90%;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    #home h1 {
+      font-size: clamp(2.4rem, 5vw + 1.2rem, 3.6rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    /* Gradient text utility */
+    .text-gradient {
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Hero rotating words */
+    .hero-title {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem;
+      align-items: baseline;
+    }
+
+    .rotate-container {
+      display: inline-block;
+      position: relative;
+      height: 1.1em;
+      overflow: hidden;
+      width: 6.5ch;
+      vertical-align: bottom;
+    }
+
+    .rotate-container span {
+      display: block;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: rotateWord 8s infinite;
+      line-height: 1.1em;
+    }
+
+    #home .rotate-container {
+      display: inline-block;
+      height: 1em;
+      overflow: hidden;
+      vertical-align: bottom;
+      margin-left: 0.3rem;
+    }
+
+    #home .rotate-container span {
+      display: block;
+      animation: rotateWord 12s infinite;
+      line-height: 1em;
+    }
+
+    @keyframes rotateWord {
+      0% { transform: translateY(0%); }
+      20% { transform: translateY(0%); }
+      25% { transform: translateY(-100%); }
+      45% { transform: translateY(-100%); }
+      50% { transform: translateY(-200%); }
+      70% { transform: translateY(-200%); }
+      75% { transform: translateY(-300%); }
+      95% { transform: translateY(-300%); }
+      100% { transform: translateY(0%); }
+    }
+
+    #home p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      color: #cdd2f1;
+    }
+
+    #home .btn {
+      font-size: 1rem;
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      border-radius: 30px;
+      background: linear-gradient(90deg, #62d3ff, #6af587);
+      color: #08142d;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    #home .btn:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(90deg, #6af587, #62d3ff);
+    }
+
+    /* Section styling */
+    section {
+      padding: 6.5rem 1.25rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    section > h2 {
+      text-align: center;
+      margin-bottom: 3rem;
+      font-size: 2.2rem;
+    }
+
+    /* About section */
+    #about .about-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+
+    #about .about-image {
+      flex: 1 1 320px;
+      max-width: 450px;
+      overflow: hidden;
+      border-radius: var(--primary-radius);
+    }
+
+    #about .about-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: left;
+    }
+
+    #about .about-text {
+      flex: 1 1 320px;
+      max-width: 600px;
+    }
+
+    #about .about-text h3 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #about .about-text p {
+      font-size: 1.1rem;
+      color: #cdd2f1;
+      max-width: 500px;
+    }
+
+    /* Features section */
+    #features .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      position: relative;
+      height: 280px;
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      /* Each card will have its own background-image applied inline */
+      background-size: cover;
+      background-position: center;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.4);
+    }
+
+    .feature-card .feature-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.7rem 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
+    .feature-card .feature-info {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -65%;
+      height: 65%;
+      padding: 1rem;
+      background: rgba(13, 19, 51, 0.8);
+      backdrop-filter: blur(8px);
+      color: #e5e8fb;
+      font-size: 1rem;
+      line-height: 1.4;
+      transition: bottom var(--transition-smooth);
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .feature-card.active .feature-info,
+    .feature-card:hover .feature-info {
+      bottom: 0;
+    }
+
+    /* Pricing section */
+    #pricing .pricing-toggle {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(10px);
+      width: fit-content; 
+      border-radius: 30px;
+      padding: 0.2rem;
+      margin: 0 auto 2rem;
+      gap: 0;
+    }
+
+    #pricing .pricing-toggle button {
+      position: relative;
+      flex: 1 1 50%;
+      padding: 0.6rem 1.5rem;
+      border: none;
+      background: none;
+      color: #d7e0ff;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer;
+      z-index: 1;
+      font-size: 1.05rem;
+      transition: color var(--transition-fast);
+    }
+
+    #pricing .pricing-toggle button[aria-selected="true"] {
+      color: #0d1333;
+    }
+
+    #pricing .pricing-toggle .toggle-highlight {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      border-radius: 30px;
+      background: var(--accent-grad);
+      transition: transform 0.3s ease;
+      z-index: 0;
+    }
+
+    #pricing .plans {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .plan-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      flex: 1 1 280px;
+      max-width: 360px;
+      padding: 2.2rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      position: relative;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .plan-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.4);
+    }
+
+    .plan-card .plan-header {
+      text-align: center;
+      padding-bottom: 1rem;
+    }
+
+    .plan-card .plan-header .plan-name {
+      font-size: 1.7rem;
+      margin-bottom: 0.3rem;
+      color: #fff;
+    }
+
+    .plan-card .plan-header .plan-price {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      background: var(--accent-grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .plan-card .plan-header .plan-subtitle {
+      font-size: 1rem;
+      color: #cdd2f1;
+    }
+
+    .plan-card ul {
+      list-style: none;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      padding-left: 1rem;
+      color: #e0e5ff;
+    }
+
+    .plan-card ul li {
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1.2rem;
+    }
+
+    .plan-card ul li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: #62d3ff;
+    }
+
+    /* CTA buttons within plan cards */
+    .plan-btn {
+      margin: 1.5rem auto 0;
+      align-self: center;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      background: var(--accent-grad);
+      color: #0d1333;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .plan-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+
+    /* Testimonials */
+    #testimonials .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .testimonial-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .testimonial-card .stars {
+      color: #ffd369;
+      font-size: 1.05rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .testimonial-card .quote {
+      font-style: italic;
+      font-size: 1.05rem;
+      color: #e5e8fb;
+      margin-bottom: 1.2rem;
+    }
+
+    .testimonial-card .author {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .testimonial-card .author .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #5263ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .testimonial-card .author .details {
+      font-size: 0.95rem;
+      color: #cdd2f1;
+      line-height: 1.2;
+    }
+
+    .testimonial-card .author .details strong {
+      display: block;
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 0.1rem;
+    }
+
+    /* Contact */
+    #contact .contact-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    #contact .contact-info {
+      flex: 1 1 260px;
+    }
+
+    #contact .contact-info h3 {
+      font-size: 1.7rem;
+      margin-bottom: 1rem;
+    }
+
+    #contact .contact-info p {
+      margin-bottom: 1rem;
+      color: #cdd2f1;
+      font-size: 1.05rem;
+    }
+
+    #contact .contact-form {
+      flex: 1 1 380px;
+      max-width: 550px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    #contact .contact-form input,
+    #contact .contact-form textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 1.0rem;
+      resize: none;
+      outline: none;
+    }
+
+    #contact .contact-form textarea {
+      min-height: 120px;
+    }
+
+    #contact .contact-form button {
+      font-size: 1rem;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(90deg, #62d3ff, #6af587);
+      color: #08142d;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform var(--transition-fast), background var(--transition-fast);
+    }
+
+    #contact .contact-form button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(90deg, #6af587, #62d3ff);
+    }
+
+    /* Footer */
+    footer {
+      background: #0b122a;
+      padding: 4rem 1rem 2rem;
+      color: #cdd2f1;
+    }
+
+    footer .footer-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto 2rem;
+      justify-content: space-between;
+    }
+
+    footer .brand {
+      flex: 1 1 260px;
+    }
+
+    footer .brand h3 {
+      font-size: 2rem;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    footer .columns {
+      flex: 1 1 160px;
+      min-width: 140px;
+    }
+
+    footer .columns h4 {
+      color: #fff;
+      margin-bottom: 0.8rem;
+    }
+
+    footer .columns ul {
+      list-style: none;
+    }
+
+    footer .columns ul li {
+      margin-bottom: 0.4rem;
+      font-size: 1rem;
+    }
+
+    footer .columns ul li a {
+      color: #cdd2f1;
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    footer .columns ul li a:hover {
+      color: #62d3ff;
+    }
+
+    footer .footer-bottom {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #8791b3;
+    }
+
+    /* Ensure hidden panels are not displayed even when flex is applied */
+    [hidden] {
+      display: none !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      #navbar {
+        gap: 1rem;
+      }
+      #navbar .nav-links {
+        gap: 1rem;
+      }
+      #home .hero-card {
+        padding: 2rem 1.5rem;
+      }
+      #about .about-container {
+        flex-direction: column;
+      }
+      .plan-card {
+        flex: 1 1 100%;
+        max-width: none;
+      }
+      footer .footer-top {
+        flex-direction: column;
+        gap: 2rem;
+      }
+      #contact .contact-container {
+        flex-direction: column;
+      }
+      /* Keep pricing tabs visible on scroll */
+      #pricing .pricing-toggle {
+        position: sticky;
+        top: 4rem;
+        z-index: 500;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #navbar {
+        flex-direction: column;
+        padding: 0.8rem 1rem;
+        width: 95%;
+      }
+      #navbar .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      #home h1 {
+        font-size: 2rem;
+      }
+      section {
+        padding: 4rem 1rem;
+      }
+      .feature-card {
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation bar -->
+  <nav id="navbar">
+    <div class="logo">
+      <!-- You may replace this with a proper logo image -->
+      <img src="Assets/MathQuest-Logo.png" alt="Math Quest Logo" />
+      <span>Math Quest</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#home" class="nav-link">Home</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#features" class="nav-link">Features</a></li>
+      <li><a href="#pricing" class="nav-link">Pricing</a></li>
+      <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home">
+    <div class="hero-overlay"></div>
+    <div class="hero-card">
+      <h1 class="hero-title">
+        Turn math into a
+        <span class="rotate-container">
+          <span>Game</span>
+          <span>Puzzle</span>
+          <span>Journey</span>
+          <span>Quest</span>
+        </span>
+      </h1>
+      <p>Earn points, unlock levels, and master concepts through interactive games and challenges.</p>
+      <p>Let’s learn, play and achieve.</p>
+      <a class="btn" href="#features">Try Now</a>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <h2>About</h2>
+    <div class="about-container">
+      <div class="about-image">
+        <img src="Assets/students.png" alt="Students illustration" />
+      </div>
+      <div class="about-text">
+        <h3>Welcome Math Explorer!</h3>
+        <p>
+          <span class="text-gradient">Math Quest</span> transforms <span class="text-gradient">learning</span> into an exciting <span class="text-gradient">journey</span> that <span class="text-gradient">connects</span> students, teachers, and parents.
+          Our platform turns complex concepts into playful adventures, fostering curiosity and confidence.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features">
+    <h2>Features</h2>
+    <div class="features-grid">
+      <div class="feature-card" style="background-image: url('Assets/features/gamified.jpg');" tabindex="0">
+        <div class="feature-label">Gamified Experience</div>
+        <div class="feature-info">
+          <p>Turn math into an adventure! Complete challenges, collect rewards, and level up your skills.</p>
+        </div>
+      </div>
+      <div class="feature-card" style="background-image: url('Assets/features/ai-tutor.jpg');" tabindex="0">
+        <div class="feature-label">AI Tutor Chat</div>
+        <div class="feature-info">
+          <p>Your personal math assistant is here—get hints, tips, and answers instantly.</p>
+        </div>
+      </div>
+      <div class="feature-card" style="background-image: url('Assets/features/steps.jpg');" tabindex="0">
+        <div class="feature-label">Step-by-Step Solving</div>
+        <div class="feature-info">
+          <p>See every step of the solution and master problem-solving with confidence.</p>
+        </div>
+      </div>
+      <div class="feature-card" style="background-image: url('Assets/features/progress.jpg');" tabindex="0">
+        <div class="feature-label">Progress Tracking</div>
+        <div class="feature-info">
+          <p>Watch your growth in real time and stay motivated to reach the next level.</p>
+        </div>
+      </div>
+      <div class="feature-card" style="background-image: url('Assets/features/personalized.jpg');" tabindex="0">
+        <div class="feature-label">Personalized Learning</div>
+        <div class="feature-info">
+          <p>Practice tailored to you. Smart quizzes adapt to your pace and goals.</p>
+        </div>
+      </div>
+      <div class="feature-card" style="background-image: url('Assets/features/multilingual.jpg');" tabindex="0">
+        <div class="feature-label">Multilingual Support</div>
+        <div class="feature-info">
+          <p>Learn math in your preferred language and understand concepts easily.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing">
+    <h2>Pricing</h2>
+    <!-- Pricing tabs -->
+    <div class="pricing-toggle" role="tablist" aria-label="Pricing tiers">
+      <span class="toggle-highlight"></span>
+      <button role="tab" id="student-tab" aria-controls="student-panel" aria-selected="true" data-index="0">Student</button>
+      <button role="tab" id="teacher-tab" aria-controls="teacher-panel" aria-selected="false" data-index="1">Teacher</button>
+    </div>
+    <!-- Student pricing panel -->
+    <div id="student-panel" class="plans" role="tabpanel" aria-labelledby="student-tab">
+      <!-- Student Basic Card -->
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-name">Basic</div>
+          <div class="plan-price">Free</div>
+          <div class="plan-subtitle">Essential to get started</div>
+        </div>
+        <ul>
+          <li>Core lessons</li>
+          <li>Basic Practice problem</li>
+          <li>Basic progress Tracking</li>
+          <li>Community Access (limited)</li>
+        </ul>
+        <button class="plan-btn">Get Started</button>
+      </div>
+      <!-- Student Pro Card -->
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">Rs.1,000</div>
+          <div class="plan-subtitle">Everything in Basic plus more</div>
+        </div>
+        <ul>
+          <li>Unlimited lessons</li>
+          <li>Practice problem</li>
+          <li>Al tutor Chat</li>
+          <li>Piority Suport</li>
+        </ul>
+        <button class="plan-btn">Get Pro</button>
+      </div>
+    </div>
+    <!-- Teacher pricing panel -->
+    <div id="teacher-panel" class="plans" role="tabpanel" aria-labelledby="teacher-tab" hidden>
+      <!-- Teacher Basic Card -->
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-name">Basic</div>
+          <div class="plan-price">Free</div>
+          <div class="plan-subtitle">Essential to get started</div>
+        </div>
+        <ul>
+          <li>Up to 10 Students</li>
+          <li>Limited Assignments</li>
+          <li>Basic Teacher Dashboard</li>
+          <li>Community Access (limited)</li>
+        </ul>
+        <button class="plan-btn">Get Started</button>
+      </div>
+      <!-- Teacher Pro Card -->
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">Rs.4,000</div>
+          <div class="plan-subtitle">Everything in Basic plus more</div>
+        </div>
+        <ul>
+          <li>Up to 25 Students</li>
+          <li>Custom Assignments</li>
+          <li>Custom Teacher Dashboard</li>
+          <li>Piority Suport</li>
+        </ul>
+        <button class="plan-btn">Get Pro</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials">
+    <h2>What They’re Saying</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="quote">“MathQuest helped me go from failing algebra to getting an A+. The step-by-step explanations are amazing!”</div>
+        <div class="author">
+          <div class="avatar">SM</div>
+          <div class="details"><strong>Sahan Manujaya</strong><span>Grade 07 Student</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="quote">“As a teacher, I love how MathGuide adapts to each student's needs. It's like having a personal tutor for every child.”</div>
+        <div class="author">
+          <div class="avatar">SN</div>
+          <div class="details"><strong>Sarath Nishantha</strong><span>Math Teacher</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="quote">“The gamification makes learning fun! My daughter actually looks forward to doing math homework now.”</div>
+        <div class="author">
+          <div class="avatar">LH</div>
+          <div class="details"><strong>Lisari Hewage</strong><span>Parent</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="quote">“Math Quest is the first app that actually makes me want to practice daily. My grades and my confidence both went up!”</div>
+        <div class="author">
+          <div class="avatar">KP</div>
+          <div class="details"><strong>Kulitha Proboda</strong><span>Grade 09 Student</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="quote">“It bridges the gap between fun and learning perfectly. My students show real progress without feeling pressured.”</div>
+        <div class="author">
+          <div class="avatar">IF</div>
+          <div class="details"><strong>Iresha Fernando</strong><span>Math Teacher</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="quote">“The parent dashboard is so helpful, I can monitor how my son is doing and celebrate his achievements together.”</div>
+        <div class="author">
+          <div class="avatar">TS</div>
+          <div class="details"><strong>Taniya Silva</strong><span>Parent</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Get in Touch</h2>
+    <p style="text-align:center; max-width:600px; margin:0 auto; color:#cdd2f1; margin-bottom:2rem;">Have questions? We'd love to hear from you.</p>
+    <div class="contact-container">
+      <div class="contact-info">
+        <h3>Contact Information</h3>
+        <p><strong>Email</strong><br>mathquestgo@gmail.com</p>
+        <p><strong>Phone</strong><br>+94 77 364 2783</p>
+        <p><strong>Support Hours</strong><br>Mon–Fri 9AM–6PM</p>
+      </div>
+      <form class="contact-form" onsubmit="event.preventDefault(); alert('Thank you for reaching out!'); this.reset();">
+        <input type="text" placeholder="Name" required />
+        <input type="email" placeholder="Email" required />
+        <textarea placeholder="Message" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-top">
+      <div class="brand">
+        <h3>Math Quest</h3>
+        <p>Making mathematics accessible and enjoyable for students worldwide.</p>
+      </div>
+      <div class="columns">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#contact">Contact us</a></li>
+        </ul>
+      </div>
+      <div class="columns">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Guidelines</a></li>
+        </ul>
+      </div>
+      <div class="columns">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">©2025 MathQuest. All rights reserved. Team ARITHMA @IIT InfoSchol 2026 JAN</div>
+  </footer>
+
+  <script>
+    // Smooth scroll & active link handling
+    const navLinks = document.querySelectorAll('#navbar .nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        // highlight clicked link via active state
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // Intersection Observer to update active nav based on scroll position
+    const sections = document.querySelectorAll('section');
+    const options = {
+      root: null,
+      threshold: 0.25
+    };
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+          });
+        }
+      });
+    }, options);
+    sections.forEach(section => observer.observe(section));
+
+    // Feature card click toggling for mobile / keyboard
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        // on small screens, toggle active; else rely on hover
+        if (window.innerWidth <= 768) {
+          featureCards.forEach(c => {
+            if (c !== card) c.classList.remove('active');
+          });
+          card.classList.toggle('active');
+        }
+      });
+      card.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') card.click();
+      });
+    });
+
+    // Pricing tabs logic
+    const pricingToggle = document.querySelector('#pricing .pricing-toggle');
+    const highlight = pricingToggle.querySelector('.toggle-highlight');
+    const tabs = pricingToggle.querySelectorAll('[role="tab"]');
+    const panels = document.querySelectorAll('#pricing [role="tabpanel"]');
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', () => {
+        // update aria-selected for tabs
+        tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+        tab.setAttribute('aria-selected', 'true');
+        // hide all panels
+        panels.forEach(panel => panel.hidden = true);
+        // show targeted panel
+        const panelId = tab.getAttribute('aria-controls');
+        const panel = document.getElementById(panelId);
+        if (panel) panel.hidden = false;
+        // move highlight
+        highlight.style.transform = `translateX(${idx * 100}%)`;
+      });
+    });
+  </script>
+</body>
+</html>
