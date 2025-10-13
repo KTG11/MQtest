@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+</head>
+<body>
+  <script> <!-- Link to your JS file -->
+    // Create basic HTML structure dynamically
+document.body.style.margin = "0";
+document.body.style.fontFamily = "Arial, sans-serif";
+document.body.style.background = "#2a2d4a";
+document.body.style.color = "white";
+document.body.style.display = "flex";
+document.body.style.flexDirection = "column";
+document.body.style.alignItems = "center";
+document.body.style.justifyContent = "center";
+document.body.style.height = "100vh";
+document.body.style.perspective = "1000px";
+
+// Create heading
+const heading = document.createElement("h2");
+heading.textContent = "Login";
+document.body.appendChild(heading);
+
+// Create canvas
+const canvas = document.createElement("canvas");
+canvas.id = "mathCanvas";
+canvas.style.position = "absolute";
+canvas.style.top = "0";
+canvas.style.left = "0";
+canvas.style.pointerEvents = "none";
+canvas.style.zIndex = "1";
+document.body.appendChild(canvas);
+
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Create form
+const form = document.createElement("form");
+form.id = "loginForm";
+form.style.display = "flex";
+form.style.flexDirection = "column";
+form.style.gap = "12px";
+form.style.background = "#3a3d5f";
+form.style.padding = "30px";
+form.style.borderRadius = "10px";
+form.style.width = "250px";
+form.style.zIndex = "2"; // on top of canvas
+document.body.appendChild(form);
+
+// Create input fields
+const emailInput = document.createElement("input");
+emailInput.name = "email";
+emailInput.type = "email";
+emailInput.placeholder = "Email";
+emailInput.required = true;
+emailInput.style.padding = "10px";
+emailInput.style.border = "none";
+emailInput.style.borderRadius = "5px";
+form.appendChild(emailInput);
+
+const passwordInput = document.createElement("input");
+passwordInput.name = "password";
+passwordInput.type = "password";
+passwordInput.placeholder = "Password";
+passwordInput.required = true;
+passwordInput.style.padding = "10px";
+passwordInput.style.border = "none";
+passwordInput.style.borderRadius = "5px";
+form.appendChild(passwordInput);
+
+// Create button
+const button = document.createElement("button");
+button.type = "submit";
+button.textContent = "Login";
+button.style.padding = "10px";
+button.style.border = "none";
+button.style.background = "#2196f3";
+button.style.color = "white";
+button.style.borderRadius = "5px";
+button.style.cursor = "pointer";
+button.addEventListener("mouseover", () => {
+  button.style.background = "#1976d2";
+});
+button.addEventListener("mouseout", () => {
+  button.style.background = "#2196f3";
+});
+form.appendChild(button);
+
+// Create signup link
+const signupLink = document.createElement("a");
+signupLink.href = "signup.html";
+signupLink.textContent = "Don't have an account? Sign up";
+signupLink.style.color = "#a1c6ff";
+signupLink.style.textDecoration = "none";
+signupLink.style.textAlign = "center";
+signupLink.style.marginTop = "15px";
+signupLink.style.cursor = "pointer";
+document.body.appendChild(signupLink);
+
+// Math symbols animation
+const symbols = ["+", "-", "×", "÷", "=", "√", "π", "∞"];
+const particles = [];
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 30 + 20;
+    this.speed = Math.random() * 2 + 1;
+    this.symbol = symbols[Math.floor(Math.random() * symbols.length)];
+    this.color = "rgba(255,255,255,0.6)";
+  }
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.font = this.size + "px Arial";
+    ctx.fillText(this.symbol, this.x, this.y);
+  }
+  update() {
+    this.y -= this.speed;
+    if (this.y < 0) {
+      this.y = canvas.height + this.size;
+      this.x = Math.random() * canvas.width;
+    }
+    this.draw();
+  }
+}
+
+for (let i = 0; i < 40; i++) {
+  particles.push(new Particle());
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => p.update());
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+// Form submission
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const formData = new FormData(form);
+
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      body: formData,
+    });
+
+    const text = await res.text();
+    alert(text);
+
+    if (text.includes("Welcome")) {
+      // window.location.href = "/dashboard.html";
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Login failed!");
+  }
+});
+
+  </script> 
+</body>
+</html>
