@@ -3,7 +3,7 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 const cors = require("cors");
 const multer = require("multer");
-//require("dotenv").config();
+require("dotenv").config(); // Make sure you have a .env file
 
 // --- Setup Express ---
 const app = express();
@@ -12,7 +12,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // --- MongoDB Atlas Connection ---
+// Make sure your .env file has: MONGODB_URI="mongodb+srv://ktgsrilanka:YOUR_PASSWORD@cluster11.vrqoh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster11"
 const CONNECTION_STRING = process.env.MONGODB_URI;
+if (!CONNECTION_STRING) {
+  console.error("❌ MongoDB connection string is missing! Please set MONGODB_URI in your .env file.");
+  process.exit(1);
+}
 const DATABASENAME = "MathQuest";
 let database;
 
@@ -20,7 +25,6 @@ let database;
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 10000;
 
 // --- Routes ---
-// (These expect `database` to be initialized)
 app.get("/login", async (req, res) => {
   try {
     const docs = await database.collection("Account").find({}).toArray();
