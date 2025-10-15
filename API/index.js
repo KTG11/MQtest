@@ -3,7 +3,7 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 const cors = require("cors");
 const multer = require("multer");
-require("dotenv").config(); // Load env variables
+//require("dotenv").config();
 
 // --- Setup Express ---
 const app = express();
