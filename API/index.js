@@ -35,18 +35,32 @@ app.get("/login", async (req, res) => {
   }
 });
 
-app.post("/login", multer().none(), async (req, res) => {
+//adding a new account to the data base
+
+app.post("/register", multer().none(), async (req, res) => {
   try {
+    const { UserName, Password, Email } = req.body;
+
+    if (!UserName || !Password || !Email) {
+      return res.status(400).send("Missing required fields");
+    }
+
+    const hashedPassword = await bcrypt.hash(Password, 10);
+
     const newDoc = {
-      Player: req.body.Player || "Unknown Player"
+      UserName,
+      Password: hashedPassword,
+      Email,
     };
+
     await database.collection("Account").insertOne(newDoc);
-    res.send("✅ Insert successful 🎉");
+    res.send("✅ Registration successful 🎉");
   } catch (err) {
     console.error("❌ Error inserting document:", err);
     res.status(500).send("Error inserting document");
   }
 });
+
 
 // --- Connect to MongoDB and Start Server ---
 async function startServer() {
