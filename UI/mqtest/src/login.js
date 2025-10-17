@@ -123,7 +123,7 @@ const loginHTML = `
     <input name="password" placeholder="Password" type="password" required />
     <button type="submit">Login</button>
   </form>
-  <a href="signup.js">Don't have an account? Sign up</a>
+  <a href="/signup">Don't have an account? Sign up</a>
   <p id="message"></p>
 
   <div id="dot" class="cursor-dot"></div>
