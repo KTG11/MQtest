@@ -3,6 +3,7 @@ const express = require("express");
 const { MongoClient } = require("mongodb");
 const cors = require("cors");
 const multer = require("multer");
+const bcrypt = require('bcryptjs');
 require("dotenv").config(); // Make sure you have a .env file
 
 // --- Setup Express ---
