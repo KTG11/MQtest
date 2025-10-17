@@ -41,6 +41,7 @@ app.get("/login", async (req, res) => {
 app.post("/register", multer().none(), async (req, res) => {
   try {
     const { UserName, Password, Email } = req.body;
+    const existingUser = await User.findOne({ Email: Email });
 
     if (!UserName || !Password || !Email) {
       return res.status(400).send("Missing required fields");
