@@ -5,8 +5,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/auth" />} />
-        <Route path="/auth" element={<auth />} />
+        <Route path="/" element={<Navigate to="/auth" replace />} />
+        <Route path="/auth" element={<Login />} />
         {/* Add other routes here */}
       </Routes>
     </Router>
