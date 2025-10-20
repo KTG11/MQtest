@@ -1,78 +1,316 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Signup</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #2a2d4a;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background: #3a3d5f;
-      padding: 30px;
-      border-radius: 10px;
-      width: 250px;
-    }
-    input {
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-    }
-    button {
-      padding: 10px;
-      border: none;
-      background: #4caf50;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #45a049;
-    }
-    a {
-      color: #a1c6ff;
-      text-decoration: none;
-      text-align: center;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MathQuest — Login / Signup</title>
+<style>
+  :root{
+    --accent:#4caf50;
+    --accent-2:#21a1f3;
+    --bg1:#0f1724;
+    --bg2:#11243a;
+    --card: rgba(58,61,95,0.95);
+    --muted:#bfc7d6;
+  }
+
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body {
+    background: linear-gradient(-45deg, #0f1724, #11243a, #16324a, #0b1220);
+    background-size: 400% 400%;
+    animation: gradientMove 18s ease infinite;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 100vh;
+    cursor: none;
+  }
+
+  @keyframes gradientMove {
+    0% {background-position: 0% 50%}
+    50% {background-position: 50% 100%}
+    100% {background-position: 0% 50%}
+  }
+
+  .container {
+    width: min(960px, 95%);
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 36px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero {
+    padding: 36px;
+    color: #f7fbff;
+  }
+  .hero h1{font-size: 2.25rem;margin: 0 0 12px;}
+  .hero p{color:var(--muted);font-size: 1rem;line-height: 1.5;margin: 0 0 20px;}
+  .features{display:flex;gap:12px;flex-wrap:wrap;}
+  .pill{background:rgba(255,255,255,0.04);padding:8px 12px;border-radius:999px;font-size:0.9rem;color:var(--muted);}
+
+  .card {
+    background: var(--card);
+    padding: 26px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+    position: relative;
+  }
+
+  .toggle{display:flex;gap:8px;margin-bottom:12px;}
+  .toggle button{
+    flex:1;padding:10px 14px;border-radius:8px;border:none;
+    background:transparent;color:var(--muted);cursor:pointer;font-weight:600;
+  }
+  .toggle button.active{
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    color:white;box-shadow:0 6px 18px rgba(14,165,90,0.18);
+  }
+
+  .forms-viewport{overflow:hidden;position:relative;}
+  .forms{display:flex;gap:24px;width:200%;transition:transform .5s cubic-bezier(.2,.9,.2,1);}
+  form.auth{width:50%;display:flex;flex-direction:column;gap:12px;}
+
+  .field{position:relative;}
+  input[type="text"],input[type="email"],input[type="password"]{
+    width:100%;padding:14px 12px;background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.06);color:#fff;border-radius:8px;font-size:0.95rem;
+  }
+  label.floating{
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    color:var(--muted);font-size:0.9rem;pointer-events:none;transition:all .2s ease;background:transparent;
+  }
+  input:focus+label.floating,input:not(:placeholder-shown)+label.floating{
+    top:-8px;font-size:0.78rem;color:var(--accent);background:var(--card);padding:0 6px;
+  }
+
+  .row{display:flex;gap:10px;}
+  .small{font-size:0.85rem;color:var(--muted);}
+  .action-btn{
+    padding:12px 14px;border-radius:8px;border:none;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    color:white;font-weight:700;cursor:pointer;
+    box-shadow:0 8px 18px rgba(16,185,129,0.12);
+  }
+  .action-btn:hover{opacity:0.9;}
+  .secondary{
+    background:transparent;border:1px solid rgba(255,255,255,0.06);
+    color:var(--muted);padding:10px 12px;border-radius:8px;cursor:pointer;
+  }
+
+  .pwd-meter{height:8px;border-radius:6px;background:rgba(255,255,255,0.06);overflow:hidden;}
+  .pwd-meter>i{display:block;height:100%;width:0%;transition:width .25s;}
+
+  .msg{text-align:center;font-size:0.85rem;margin-top:8px;}
+
+  input:focus{outline:none;box-shadow:0 6px 20px rgba(33,161,243,0.06);border-color:rgba(33,161,243,0.3);}
+  @media(max-width:880px){.container{grid-template-columns:1fr;padding:24px;gap:20px;}.forms{width:100%}form.auth{width:100%}}
+  .bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+</style>
 </head>
 <body>
-  <h2>Signup</h2>
-  <form id="signupForm">
-    <input name="username" placeholder="Username" required />
-    <input name="email" placeholder="Email" type="email" required />
-    <input name="password" placeholder="Password" type="password" required />
-    <button type="submit">Sign Up</button>
-  </form>
-  <a href="login.html">Already have an account? Login</a>
 
-  <script>
-    document.getElementName("signupForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
+<canvas class="bg-canvas" id="bgCanvas"></canvas>
 
-      const res = await fetch("/signup", {
-        method: "POST",
-        body: formData,
-      });
+<div class="container">
+  <div class="hero">
+    <h1>MathQuest — Master Math the fun way</h1>
+    <p>Adaptive, gamified math practice aligned to local syllabuses. Track progress, earn badges and build real understanding.</p>
+    <div class="features">
+      <div class="pill">Gamified</div>
+      <div class="pill">Adaptive</div>
+      <div class="pill">Offline mode</div>
+      <div class="pill">Teacher tools</div>
+    </div>
+  </div>
 
-      const text = await res.text();
-      alert(text);
-      if (text.includes("successful")) {
-        window.location.href = "/login.html";
-      }
-    });
-  </script>
+  <div class="card">
+    <div class="toggle">
+      <button id="t-login" class="active">Login</button>
+      <button id="t-signup">Sign up</button>
+    </div>
+
+    <div class="forms-viewport">
+      <div class="forms" id="forms">
+
+        <!-- LOGIN FORM -->
+        <form class="auth" id="loginForm">
+          <div class="field">
+            <input type="text" id="loginUserName" name="UserName" placeholder=" " required>
+            <label class="floating" for="loginUserName">UserName</label>
+          </div>
+
+          <div class="field">
+            <input type="password" id="loginPassword" name="password" placeholder=" " required>
+            <label class="floating" for="loginPassword">Password</label>
+          </div>
+
+          <button type="submit" class="action-btn">Log in</button>
+          <div id="loginMsg" class="msg"></div>
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form class="auth" id="signupForm">
+          <div class="field">
+            <input type="text" id="suName" name="username" placeholder=" " required>
+            <label class="floating" for="suName">Username</label>
+          </div>
+
+          <div class="field">
+            <input type="email" id="suEmail" name="email" placeholder=" " required>
+            <label class="floating" for="suEmail">Email</label>
+          </div>
+
+          <div class="field">
+            <input type="password" id="suPassword" name="password" placeholder=" " required>
+            <label class="floating" for="suPassword">Password</label>
+          </div>
+
+          <div class="field">
+            <input type="password" id="confirm" placeholder=" " required>
+            <label class="floating" for="confirm">Confirm Password</label>
+          </div>
+
+          <div class="pwd-meter"><i id="pwdBar"></i></div>
+          <div class="msg" id="pwdText">Use 8+ characters, a number and a symbol</div>
+
+          <button type="submit" class="action-btn">Create account</button>
+          <div id="signupMsg" class="msg"></div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Toggle UI */
+const tLogin=document.getElementById('t-login');
+const tSignup=document.getElementById('t-signup');
+const forms=document.getElementById('forms');
+function showLogin(){tLogin.classList.add('active');tSignup.classList.remove('active');forms.style.transform='translateX(0%)';}
+function showSignup(){tSignup.classList.add('active');tLogin.classList.remove('active');forms.style.transform='translateX(-50%)';}
+tLogin.addEventListener('click',showLogin);
+tSignup.addEventListener('click',showSignup);
+
+/* Password strength */
+const suPassword=document.getElementById('suPassword');
+const pwdBar=document.getElementById('pwdBar');
+const pwdText=document.getElementById('pwdText');
+function strengthScore(pwd){let s=0;if(pwd.length>=8)s++;if(/[A-Z]/.test(pwd))s++;if(/[0-9]/.test(pwd))s++;if(/[^A-Za-z0-9]/.test(pwd))s++;return s;}
+function updatePwdMeter(){
+  const s=strengthScore(suPassword.value);
+  const pct=(s/5)*100;
+  pwdBar.style.width=pct+'%';
+  const colors=['#ff6b6b','#ffd54f','#a2d149','#46c0a6','#1fb2ff'];
+  pwdBar.style.background=`linear-gradient(90deg,${colors[Math.min(s,4)]},${colors[Math.min(s,4)]})`;
+  const labels=['Too weak','Weak','Medium','Strong','Very strong'];
+  pwdText.textContent=s>0?labels[s-1]:'Use 8+ characters, a number and a symbol';
+}
+suPassword.addEventListener('input',updatePwdMeter);
+
+/* --- BACKEND INTEGRATION --- */
+const signupForm=document.getElementById('signupForm');
+const loginForm=document.getElementById('loginForm');
+const signupMsg=document.getElementById('signupMsg');
+const loginMsg=document.getElementById('loginMsg');
+
+/* Replace this with your Render backend URL */
+const BASE_URL = "http://localhost:3000";
+
+signupForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const username=suName.value.trim();
+  const email=suEmail.value.trim();
+  const password=suPassword.value;
+  const confirm=document.getElementById('confirm').value;
+
+  if(password!==confirm){
+    signupMsg.textContent="❌ Passwords do not match!";
+    signupMsg.style.color="#ff6b6b";
+    return;
+  }
+  signupMsg.textContent="⏳ Creating your account...";
+  signupMsg.style.color="#fff";
+  try{
+    const formData=new FormData();
+    formData.append("UserName",username);
+    formData.append("Email",email);
+    formData.append("Password",password);
+
+    const res=await fetch(`${BASE_URL}/register`,{method:"POST",body:formData});
+    const text=await res.text();
+    if(res.ok){
+      signupMsg.textContent=text||"✅ Registration successful!";
+      signupMsg.style.color="#7fff7f";
+      signupForm.reset();
+      showLogin();
+    }else{
+      signupMsg.textContent=text||"❌ Registration failed!";
+      signupMsg.style.color="#ff6b6b";
+    }
+  }catch(err){
+    signupMsg.textContent="⚠️ Network error — please try again.";
+    signupMsg.style.color="#ffcc00";
+  }
+});
+
+loginForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  loginMsg.textContent="⏳ Checking credentials...";
+  loginMsg.style.color="#fff";
+  try{
+    const formData=new FormData();
+    formData.append("Username",loginUserName.value.trim());
+    formData.append("Password",loginPassword.value);
+
+    const res=await fetch(`${BASE_URL}/login`,{method:"POST",body:formData});
+    const text=await res.text();
+    if(res.ok){
+      loginMsg.textContent="✅ Login successful! Redirecting...";
+      loginMsg.style.color="#7fff7f";
+      setTimeout(()=>{window.location.href="https://youtube.com";},1200);
+    }else{
+      loginMsg.textContent=text||"❌ Invalid credentials!";
+      loginMsg.style.color="#ff6b6b";
+    }
+  }catch(err){
+    loginMsg.textContent="⚠️ Network error — please try again.";
+    loginMsg.style.color="#ffcc00";
+  }
+});
+
+/* Background canvas animation (same as your original) */
+const canvas=document.getElementById('bgCanvas'),ctx=canvas.getContext('2d');
+function resizeCanvas(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resizeCanvas();addEventListener('resize',resizeCanvas);
+const symbols=['+','−','×','÷','=','<','>','√','π','∑','∫','∞','θ','α','β','γ','Δ','λ','μ','σ'];
+const layers=[];
+for(let L=0;L<3;L++){const arr=[];const count=20+L*10;
+for(let i=0;i<count;i++){arr.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,symbol:symbols[Math.floor(Math.random()*symbols.length)],size:(18+Math.random()*40)*(1-L*0.18),speed:0.2+Math.random()*0.8+L*0.4,alpha:0.12+Math.random()*0.4});}
+layers.push(arr);}
+let mouseX=canvas.width/2,mouseY=canvas.height/2;
+document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+const cx=(mouseX/canvas.width-0.5)*60,cy=(mouseY/canvas.height-0.5)*40;
+layers.forEach((layer,idx)=>{
+  layer.forEach(p=>{
+    p.y-=p.speed*0.25;
+    if(p.y<-60){p.y=canvas.height+40;p.x=Math.random()*canvas.width;}
+    const ox=cx*(idx+1)*0.7,oy=cy*(idx+1)*0.5;
+    ctx.globalAlpha=p.alpha;ctx.fillStyle=`rgba(255,255,255,${p.alpha})`;
+    ctx.font=`${p.size}px Arial`;ctx.fillText(p.symbol,p.x+ox,p.y+oy);
+  });
+});
+requestAnimationFrame(draw);
+}
+draw();
+</script>
+
 </body>
 </html>
