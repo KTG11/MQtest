@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathQuest</title>
+  <title>Name Page - dot + Ring Cursor</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #0f2027;
+      background: linear-gradient(135deg, #2c5364, #203a43, #0f2027);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      /* Option to hide the native cursor */
+      cursor: none;
+    }
+    h1 {
+      position: absolute;
+      color: white;
+      font-size: 4rem;
+      z-index: 2;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    /* START -Dot + Ring Cursor Styling*/
+    .cursor-dot, .cursor-ring{
+      position: fixed;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+
+    .cursor-dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.12);
+      transition: width .12s ease, height .12s ease, opacity .12s ease;
+    }
+
+    .cursor-ring{
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255,0.18);
+      transform: translate(-50%, -50%);
+      transition: transform .12s cubic-bezier(.2, .9, .2, 1), border-color .12s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.hovering .cursor-ring{
+      transform: translate(-50%,-50%) scale(1.35);
+      border-color: rgba(123, 211, 137, 0.95);
+    }
+
+    /*hovering cursor code end*/
+  </style>
+</head>
+<body>
+  <h1>MathQuest</h1>
+  <canvas id="mathCanvas"></canvas>
+
+  <!--START-Add cursor elements-->
+  <div id="dot" class="cursor-dot" aria-hidden="true"></div>
+  <div id="ring" class="cursor-ring" aria-hidden="true"></div>
+  <!--End of cursor elements-->
+
+  <script>
+    const canvas = document.getElementById("mathCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const symbols = ["+", "-", "×", "÷", "=", "√", "π", "∞"];
+    const particles = [];
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 30 + 20;
+        this.speed = Math.random() * 2 + 1;
+        this.symbol = symbols[Math.floor(Math.random() * symbols.length)];
+        this.color = "rgba(255,255,255,0.6)";
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.font = this.size + "px Arial";
+        ctx.fillText(this.symbol, this.x, this.y);
+      }
+      update() {
+        this.y -= this.speed;
+        if (this.y < 0) {
+          this.y = canvas.height + this.size;
+          this.x = Math.random() * canvas.width;
+        }
+        this.draw();
+      }
+    }
+
+    for (let i = 0; i < 40; i++) {
+      particles.push(new Particle());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => p.update());
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    /* START - Cursor JS */
+    const dot = document.getElementById('dot');
+    const ring = document.getElementById('ring');
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX, ringY = mouseY;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + "px";
+      dot.style.top = mouseY + "px";
+    })
+
+    //Smooth follow for Ring
+    function animateCursor() {
+      ringX += (mouseX - ringX) *0.18;
+      ringY += (mouseY - ringY) *0.18;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+
+    animateCursor();
+
+    //Hover Effect
+    const hoverables = document.querySelectorAll('a, button, h1');
+    hoverables.forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classlist.add('hovering'));
+      el.addEventListener('mouseleave', () => document.body.classlist.remove('hovering'));
+    });
+
+    //Hide when leaving window
+    document.addEventListener('mouseleave', () => {
+      dot.style.opacity = '0';
+      ring.dot.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+      dot.style.opacity = '1';
+      ring.style.opacity = '1';
+    });
+
+    /* HOVERING CURSOR OPTION END */
+    
+  </script>
+  
+  
+</body>
+</html>
