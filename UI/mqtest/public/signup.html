@@ -1,3 +1,5 @@
+my fixed code :
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -259,30 +261,46 @@ signupForm.addEventListener('submit',async e=>{
   }
 });
 
-loginForm.addEventListener('submit',async e=>{
+loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  loginMsg.textContent="⏳ Checking credentials...";
-  loginMsg.style.color="#fff";
-  try{
-    const formData=new FormData();
-    formData.append("Username",loginUserName.value.trim());
-    formData.append("Password",loginPassword.value);
+  loginMsg.textContent = "⏳ Checking credentials...";
+  loginMsg.style.color = "#fff";
 
-    const res=await fetch(`${BASE_URL}/login`,{method:"POST",body:formData});
-    const text=await res.text();
-    if(res.ok){
-      loginMsg.textContent="✅ Login successful! Redirecting...";
-      loginMsg.style.color="#7fff7f";
-      setTimeout(()=>{window.location.href="https://youtube.com";},1200);
-    }else{
-      loginMsg.textContent=text||"❌ Invalid credentials!";
-      loginMsg.style.color="#ff6b6b";
+  try {
+    // Prepare the login payload
+    const payload = {
+      UserName: loginUserName.value.trim(),
+      Password: loginPassword.value,
+    };
+
+    // Send as JSON instead of FormData
+    const res = await fetch(`${BASE_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      loginMsg.textContent = data.message || "✅ Login successful! Redirecting...";
+      loginMsg.style.color = "#7fff7f";
+      setTimeout(() => {
+        window.location.href = "https://youtube.com"; // change redirect if needed
+      }, 1200);
+    } else {
+      loginMsg.textContent = data.message || "❌ Invalid credentials!";
+      loginMsg.style.color = "#ff6b6b";
     }
-  }catch(err){
-    loginMsg.textContent="⚠️ Network error — please try again.";
-    loginMsg.style.color="#ffcc00";
+  } catch (err) {
+    console.error(err);
+    loginMsg.textContent = "⚠️ Network error — please try again.";
+    loginMsg.style.color = "#ffcc00";
   }
 });
+
 
 /* Background canvas animation (same as your original) */
 const canvas=document.getElementById('bgCanvas'),ctx=canvas.getContext('2d');
