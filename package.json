@@ -1,6 +1,9 @@
 {
   "dependencies": {
+    "@babylonjs/core": "^8.33.4",
+    "@babylonjs/gui": "^8.33.4",
     "dotenv": "^17.2.3",
-    "react-router-dom": "^7.9.4"
+    "react-router-dom": "^7.9.4",
+    "three": "^0.180.0"
   }
 }

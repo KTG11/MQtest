@@ -100,16 +100,18 @@
 
   button:hover {opacity: 0.9;}
 
-  .response-box {
+    .response-box {
     margin-top: 22px;
     background: rgba(255,255,255,0.03);
     border-radius: 8px;
     padding: 16px;
-    min-height: 80px;
+    max-height: 240px;       /* Limit the height */
+    overflow-y: auto;        /* Enable vertical scrolling */
     color: #f7fbff;
     white-space: pre-wrap;
     border: 1px solid rgba(255,255,255,0.06);
   }
+
 
   #loading {
     text-align: center;

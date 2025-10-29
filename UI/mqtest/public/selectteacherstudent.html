@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Role | MathQuest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d1b4e 50%, #1a2332 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Floating math symbols */
+    .math-symbol {
+      position: fixed;
+      font-size: 40px;
+      opacity: 0.08;
+      color: #fff;
+      animation: float 18s infinite ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-25px) rotate(10deg); }
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 32px;
+      margin-bottom: 40px;
+      text-align: center;
+      background: linear-gradient(135deg, #60efff 0%, #0ea5e9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .role-container {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .role-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      width: 240px;
+      height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      cursor: pointer;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .role-card:hover {
+      transform: translateY(-8px);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .role-card h2 {
+      margin-top: 15px;
+      font-size: 22px;
+    }
+
+    .role-card p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .role-icon {
+      font-size: 50px;
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    @media (max-width: 600px) {
+      .role-card {
+        width: 200px;
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating math symbols -->
+  <div class="math-symbol" style="left: 10%; top: 20%;">π</div>
+  <div class="math-symbol" style="right: 15%; top: 50%;">∞</div>
+  <div class="math-symbol" style="left: 30%; bottom: 15%;">Σ</div>
+  <div class="math-symbol" style="right: 40%; top: 10%;">λ</div>
+  <div class="math-symbol" style="left: 70%; bottom: 10%;">α</div>
+
+  <h1>Welcome to MathQuest</h1>
+  <div class="role-container">
+    <div class="role-card" onclick="selectRole('student')">
+      <div class="role-icon">🎓</div>
+      <h2>Student</h2>
+      <p>Access lessons, track progress, and earn achievements.</p>
+    </div>
+    <div class="role-card" onclick="selectRole('teacher')">
+      <div class="role-icon">👩‍🏫</div>
+      <h2>Teacher</h2>
+      <p>Monitor students’ performance and manage classes.</p>
+    </div>
+  </div>
+
+  <footer>© 2025 MathQuest</footer>
+
+  <script>
+    function selectRole(role) {
+      if (role === 'student') {
+        window.location.href = 'student-dashboard.html'; // change to actual link
+      } else if (role === 'teacher') {
+        window.location.href = 'teacher-dashboard.html'; // change to actual link
+      }
+    }
+  </script>
+</body>
+</html>

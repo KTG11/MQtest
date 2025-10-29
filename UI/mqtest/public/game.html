@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Algebra Game</title>
     <style>
-      html, body {
+      html,
+      body {
         width: 100%;
         height: 100%;
         margin: 0;
@@ -22,37 +23,35 @@
   <body>
     <canvas id="renderCanvas"></canvas>
 
-    <!-- Babylon.js libraries -->
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <!-- Import Babylon.js packages using ES modules -->
+    <script type="module">
+      import { Engine, Scene, Color3, ArcRotateCamera, HemisphericLight, MeshBuilder, StandardMaterial, ActionManager, ExecuteCodeAction } from '@babylonjs/core';
+      import { AdvancedDynamicTexture, TextBlock } from '@babylonjs/gui';
 
-    <script>
       const canvas = document.getElementById("renderCanvas");
-      const engine = new BABYLON.Engine(canvas, true);
+      const engine = new Engine(canvas, true);
 
       const createScene = () => {
-        const scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color3(0.05, 0.05, 0.1);
+        const scene = new Scene(engine);
+        scene.clearColor = new Color3(0.05, 0.05, 0.1);
 
         // Camera
-        const camera = new BABYLON.ArcRotateCamera(
-          "camera", Math.PI / 2, Math.PI / 3, 10, BABYLON.Vector3.Zero(), scene
-        );
+        const camera = new ArcRotateCamera("camera", Math.PI / 2, Math.PI / 3, 10, Vector3.Zero(), scene);
         camera.attachControl(canvas, true);
 
         // Light
-        new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+        new HemisphericLight("light", new Vector3(0, 1, 0), scene);
 
         // GUI overlay
-        const gui = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        const gui = AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-        const questionText = new BABYLON.GUI.TextBlock();
+        const questionText = new TextBlock();
         questionText.color = "white";
         questionText.fontSize = 36;
         questionText.top = "-40%";
         gui.addControl(questionText);
 
-        const scoreText = new BABYLON.GUI.TextBlock();
+        const scoreText = new TextBlock();
         scoreText.color = "yellow";
         scoreText.fontSize = 28;
         scoreText.top = "-47%";
@@ -74,7 +73,7 @@
 
         // Spawn cubes with answers
         function spawnAnswers(correctAnswer) {
-          cubes.forEach(c => c.dispose());
+          cubes.forEach((c) => c.dispose());
           cubes = [];
 
           const answers = new Set([correctAnswer]);
@@ -85,11 +84,11 @@
           const answerArray = Array.from(answers).sort(() => Math.random() - 0.5);
 
           for (let i = 0; i < answerArray.length; i++) {
-            const cube = BABYLON.MeshBuilder.CreateBox("cube" + i, {}, scene);
-            cube.position = new BABYLON.Vector3(-4 + i * 4, 0, 0);
+            const cube = MeshBuilder.CreateBox("cube" + i, {}, scene);
+            cube.position = new Vector3(-4 + i * 4, 0, 0);
 
-            const mat = new BABYLON.StandardMaterial("mat" + i, scene);
-            mat.diffuseColor = new BABYLON.Color3(0.2, 0.5, 1);
+            const mat = new StandardMaterial("mat" + i, scene);
+            mat.diffuseColor = new Color3(0.2, 0.5, 1);
             cube.material = mat;
 
             // Floating animation
@@ -101,12 +100,12 @@
             cubes.push(cube);
 
             // --- Larger label above cube ---
-            const plane = BABYLON.MeshBuilder.CreatePlane("plane" + i, { size: 2 }, scene);
-            plane.position = cube.position.add(new BABYLON.Vector3(0, 1.8, 0));
-            plane.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL; // Always face camera
+            const plane = MeshBuilder.CreatePlane("plane" + i, { size: 2 }, scene);
+            plane.position = cube.position.add(new Vector3(0, 1.8, 0));
+            plane.billboardMode = Mesh.BILLBOARDMODE_ALL; // Always face camera
 
-            const planeTex = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane);
-            const label = new BABYLON.GUI.TextBlock();
+            const planeTex = AdvancedDynamicTexture.CreateForMesh(plane);
+            const label = new TextBlock();
             label.text = cube.answerValue.toString();
             label.color = "white";
             label.fontSize = 90;
@@ -116,17 +115,17 @@
             // --- end label setup ---
 
             // Click action
-            cube.actionManager = new BABYLON.ActionManager(scene);
+            cube.actionManager = new ActionManager(scene);
             cube.actionManager.registerAction(
-              new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, () => {
+              new ExecuteCodeAction(ActionManager.OnPickTrigger, () => {
                 if (cube.answerValue === currentAnswer) {
-                  cube.material.diffuseColor = new BABYLON.Color3(0, 1, 0);
+                  cube.material.diffuseColor = new Color3(0, 1, 0);
                   score++;
                   scoreText.text = `Score: ${score}`;
                   questionText.text = "✅ Correct!";
                   setTimeout(() => nextQuestion(), 1500);
                 } else {
-                  cube.material.diffuseColor = new BABYLON.Color3(1, 0, 0);
+                  cube.material.diffuseColor = new Color3(1, 0, 0);
                   questionText.text = "❌ Wrong! Try again!";
                 }
               })
