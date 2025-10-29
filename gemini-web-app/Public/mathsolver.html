@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MathQuest — Solve Problems</title>
+<style>
+  :root {
+    --accent: #4caf50;
+    --accent-2: #21a1f3;
+    --bg1: #0f1724;
+    --bg2: #11243a;
+    --card: rgba(58,61,95,0.95);
+    --muted: #bfc7d6;
+  }
+
+  html,body {
+    height:100%; margin:0; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+
+  body {
+    background: linear-gradient(-45deg, #0f1724, #11243a, #16324a, #0b1220);
+    background-size: 400% 400%;
+    animation: gradientMove 18s ease infinite;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 100vh;
+  }
+
+  @keyframes gradientMove {
+    0% {background-position: 0% 50%}
+    50% {background-position: 50% 100%}
+    100% {background-position: 0% 50%}
+  }
+
+  .container {
+    width: min(680px, 95%);
+    background: var(--card);
+    border-radius: 14px;
+    padding: 28px 32px 36px;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+    position: relative;
+    z-index: 2;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    margin: 0 0 8px;
+    text-align: center;
+  }
+  p.subtitle {
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 18px;
+  }
+
+  label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  textarea, input[type="file"] {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    padding: 12px;
+    resize: vertical;
+  }
+
+  textarea:focus, input[type="file"]:focus {
+    outline: none;
+    box-shadow: 0 6px 20px rgba(33,161,243,0.06);
+    border-color: rgba(33,161,243,0.3);
+  }
+
+  button {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(16,185,129,0.12);
+    font-size: 1rem;
+  }
+
+  button:hover {opacity: 0.9;}
+
+  .response-box {
+    margin-top: 22px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 16px;
+    min-height: 80px;
+    color: #f7fbff;
+    white-space: pre-wrap;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  #loading {
+    text-align: center;
+    color: var(--muted);
+    display: none;
+    margin-top: 10px;
+  }
+
+  .bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<canvas class="bg-canvas" id="bgCanvas"></canvas>
+
+<div class="container">
+  <h1>📘 MathQuest Solver</h1>
+  <p class="subtitle">Upload a math problem image or type your question below</p>
+
+  <form id="solveForm">
+    <div class="field">
+      <label for="question">Your Question</label>
+      <textarea id="question" name="question" rows="4" placeholder="e.g. What is the area of a circle with radius 7cm?"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="image">Upload Image (optional)</label>
+      <input type="file" id="image" name="image" accept="image/*">
+    </div>
+
+    <button type="submit">🧠 Solve Problem</button>
+  </form>
+
+  <div id="loading">⏳ Thinking...</div>
+
+  <div class="response-box" id="responseBox">Response will appear here...</div>
+</div>
+
+<script>
+const form = document.getElementById('solveForm');
+const responseBox = document.getElementById('responseBox');
+const loading = document.getElementById('loading');
+
+// CHANGE this to your backend URL
+const BASE_URL = "http://127.0.0.1:5000";
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  responseBox.textContent = "";
+  loading.style.display = "block";
+
+  const formData = new FormData();
+  const question = document.getElementById('question').value.trim();
+  const image = document.getElementById('image').files[0];
+
+  if (question) formData.append("question", question);
+  if (image) formData.append("image", image);
+
+  try {
+    const res = await fetch(`${BASE_URL}/solve`, {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+    loading.style.display = "none";
+
+    if (data.response) {
+      responseBox.textContent = data.response;
+    } else {
+      responseBox.textContent = "⚠️ Error: " + (data.error || "Unknown issue");
+    }
+  } catch (err) {
+    loading.style.display = "none";
+    responseBox.textContent = "⚠️ Network error — please try again.";
+  }
+});
+
+/* Background animation */
+const canvas=document.getElementById('bgCanvas'),ctx=canvas.getContext('2d');
+function resizeCanvas(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resizeCanvas();addEventListener('resize',resizeCanvas);
+const symbols=['+','−','×','÷','=','<','>','√','π','∑','∫','∞','θ','α','β','γ','Δ','λ','μ','σ'];
+const layers=[];
+for(let L=0;L<3;L++){const arr=[];const count=20+L*10;
+for(let i=0;i<count;i++){arr.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,symbol:symbols[Math.floor(Math.random()*symbols.length)],size:(18+Math.random()*40)*(1-L*0.18),speed:0.2+Math.random()*0.8+L*0.4,alpha:0.12+Math.random()*0.4});}
+layers.push(arr);}
+let mouseX=canvas.width/2,mouseY=canvas.height/2;
+document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY;});
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+const cx=(mouseX/canvas.width-0.5)*60,cy=(mouseY/canvas.height-0.5)*40;
+layers.forEach((layer,idx)=>{
+  layer.forEach(p=>{
+    p.y-=p.speed*0.25;
+    if(p.y<-60){p.y=canvas.height+40;p.x=Math.random()*canvas.width;}
+    const ox=cx*(idx+1)*0.7,oy=cy*(idx+1)*0.5;
+    ctx.globalAlpha=p.alpha;
+    ctx.fillStyle=`rgba(255,255,255,${p.alpha})`;
+    ctx.font=`${p.size}px Arial`;
+    ctx.fillText(p.symbol,p.x+ox,p.y+oy);
+  });
+});
+requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>

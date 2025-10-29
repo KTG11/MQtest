@@ -1,5 +1,3 @@
-my fixed code :
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,7 +137,7 @@ my fixed code :
     <div class="forms-viewport">
       <div class="forms" id="forms">
 
-        <!-- LOGIN FORM -->
+        <!-- login form-->
         <form class="auth" id="loginForm">
           <div class="field">
             <input type="text" id="loginUserName" name="UserName" placeholder=" " required>
@@ -155,7 +153,7 @@ my fixed code :
           <div id="loginMsg" class="msg"></div>
         </form>
 
-        <!-- SIGNUP FORM -->
+        <!-- signup forM -->
         <form class="auth" id="signupForm">
           <div class="field">
             <input type="text" id="suName" name="username" placeholder=" " required>
@@ -190,7 +188,7 @@ my fixed code :
 </div>
 
 <script>
-/* Toggle UI */
+/* switching UI */
 const tLogin=document.getElementById('t-login');
 const tSignup=document.getElementById('t-signup');
 const forms=document.getElementById('forms');
@@ -199,7 +197,7 @@ function showSignup(){tSignup.classList.add('active');tLogin.classList.remove('a
 tLogin.addEventListener('click',showLogin);
 tSignup.addEventListener('click',showSignup);
 
-/* Password strength */
+/* pass strength controll */
 const suPassword=document.getElementById('suPassword');
 const pwdBar=document.getElementById('pwdBar');
 const pwdText=document.getElementById('pwdText');
@@ -215,13 +213,13 @@ function updatePwdMeter(){
 }
 suPassword.addEventListener('input',updatePwdMeter);
 
-/* --- BACKEND INTEGRATION --- */
+/* --- backend connection --- */
 const signupForm=document.getElementById('signupForm');
 const loginForm=document.getElementById('loginForm');
 const signupMsg=document.getElementById('signupMsg');
 const loginMsg=document.getElementById('loginMsg');
 
-/* Replace this with your Render backend URL */
+/* render backend conecting URL */
 const BASE_URL = "https://mqtest.onrender.com";
 
 signupForm.addEventListener('submit',async e=>{
@@ -267,13 +265,13 @@ loginForm.addEventListener('submit', async (e) => {
   loginMsg.style.color = "#fff";
 
   try {
-    // Prepare the login payload
+    // login payload
     const payload = {
       UserName: loginUserName.value.trim(),
       Password: loginPassword.value,
     };
 
-    // Send as JSON instead of FormData
+    // Send as JSON file 
     const res = await fetch(`${BASE_URL}/login`, {
       method: "POST",
       headers: {
@@ -288,7 +286,7 @@ loginForm.addEventListener('submit', async (e) => {
       loginMsg.textContent = data.message || "✅ Login successful! Redirecting...";
       loginMsg.style.color = "#7fff7f";
       setTimeout(() => {
-        window.location.href = "https://youtube.com"; // change redirect if needed
+        window.location.href = "https://youtube.com"; // redirect linke Here
       }, 1200);
     } else {
       loginMsg.textContent = data.message || "❌ Invalid credentials!";
@@ -302,7 +300,7 @@ loginForm.addEventListener('submit', async (e) => {
 });
 
 
-/* Background canvas animation (same as your original) */
+/* Background canvas animation */
 const canvas=document.getElementById('bgCanvas'),ctx=canvas.getContext('2d');
 function resizeCanvas(){canvas.width=innerWidth;canvas.height=innerHeight;}
 resizeCanvas();addEventListener('resize',resizeCanvas);
