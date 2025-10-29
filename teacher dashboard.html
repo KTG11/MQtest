@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard | MathQuest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d1b4e 50%, #1a2332 100%);
+      color: #fff;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Floating math symbols background */
+    .math-symbol {
+      position: fixed;
+      font-size: 40px;
+      opacity: 0.1;
+      color: #fff;
+      animation: float 20s infinite ease-in-out;
+      pointer-events: none;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(10deg); }
+    }
+    a{
+        text-decoration: none;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto 30px;
+    }
+    
+    .menu-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      position: relative;
+    }
+    
+    .menu-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.05);
+    }
+    
+    .notification-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      background: #ef4444;
+      border-radius: 50%;
+    }
+    
+    .search-bar {
+      flex: 0 0 400px;
+      position: relative;
+    }
+    
+    .search-bar input {
+      width: 100%;
+      padding: 12px 45px 12px 20px;
+      border-radius: 25px;
+      border: none;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    
+    .search-bar input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .search-bar input:focus {
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .welcome-text {
+      font-size: 28px;
+      font-weight: 600;
+    }
+    
+    .profile-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .profile-icon:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto 40px;
+    }
+    
+    .stat-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-info {
+      color: #333;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    
+    .stat-icon {
+      font-size: 42px;
+    }
+    
+    .classes-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .class-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .class-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .class-card:active {
+      transform: translateY(-2px);
+    }
+    
+    .class-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 20px;
+    }
+    
+    .class-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .teacher-name {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .progress-indicator {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    
+    .progress-bar-container {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);
+      border-radius: 10px;
+      transition: width 1s ease;
+    }
+    
+    .top-performers {
+      margin-top: 25px;
+    }
+    
+    .section-title {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    
+    .student-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .student-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 15px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .student-item:hover {
+      padding-left: 10px;
+      color: #fff;
+    }
+    
+    .student-points {
+      color: #06b6d4;
+      font-weight: 600;
+    }
+    
+    .class-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-leaderboard {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .btn-leaderboard:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+    
+    .btn-new-lesson {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-new-lesson:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+    
+    .students-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    
+    .student-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .student-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .student-avatar {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%);
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+    
+    .student-name {
+      color: #1e293b;
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+    
+    .student-level {
+      color: #64748b;
+      font-size: 13px;
+    }
+    
+    @media (max-width: 1024px) {
+      .classes-section {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header {
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      
+      .search-bar {
+        order: 3;
+        flex: 1 1 100%;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .classes-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .students-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating math symbols -->
+  <div class="math-symbol" style="left: 5%; top: 10%;">π</div>
+  <div class="math-symbol" style="left: 15%; top: 60%;">∑</div>
+  <div class="math-symbol" style="right: 10%; top: 15%;">α</div>
+  <div class="math-symbol" style="right: 20%; top: 70%;">∞</div>
+  <div class="math-symbol" style="left: 50%; top: 80%;">λ</div>
+  <div class="math-symbol" style="right: 40%; top: 5%;">β</div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="menu-btn">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="width: 18px; height: 2px; background: #fff;"></div>
+        <div style="width: 18px; height: 2px; background: #fff;"></div>
+        <div style="width: 18px; height: 2px; background: #fff;"></div>
+      </div>
+      <div class="notification-dot"></div>
+    </div>
+    
+    <div class="search-bar">
+      <input type="text" placeholder="Search">
+      <span class="search-icon">🔍</span>
+    </div>
+    
+    <div class="welcome-text">Welcome back, Mrs Siriwardena</div>
+    
+    <div class="profile-icon">👤</div>
+  </div>
+
+  <!-- Stats Summary -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-info">
+        <div class="stat-label">Total Students</div>
+        <div class="stat-value">20</div>
+      </div>
+      <div class="stat-icon">👥</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-info">
+        <div class="stat-label">Total Lessons</div>
+        <div class="stat-value">80</div>
+      </div>
+      <div class="stat-icon">📚</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-info">
+        <div class="stat-label">Average Progress</div>
+        <div class="stat-value">62%</div>
+      </div>
+      <div class="stat-icon">📈</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-info">
+        <div class="stat-label">Active today</div>
+        <div class="stat-value">16</div>
+      </div>
+      <div class="stat-icon">🕐</div>
+    </div>
+  </div>
+
+  <!-- Classes Section -->
+  <div class="classes-section">
+    <!-- 6A Afternoon Class -->
+    <div class="class-card" onclick="window.location.href='class-6a.html'">
+      <div class="class-header">
+        <div>
+          <div class="class-title">6A-Afternoon Class</div>
+          <div class="teacher-name">Teacher: Mrs Siriwardena</div>
+        </div>
+        <div class="progress-indicator">Class Progress</div>
+      </div>
+      
+      <div class="progress-bar-container">
+        <div class="progress-bar" style="width: 0%" data-width="75%"></div>
+      </div>
+      
+      <div class="top-performers">
+        <div class="section-title">Top Performers</div>
+        <div class="student-list">
+          <div class="student-item">
+            <span>Tharusha Mendis</span>
+            <span class="student-points">1650 pts</span>
+          </div>
+          <div class="student-item">
+            <span>Sithara Fernando</span>
+            <span class="student-points">1300 pts</span>
+          </div>
+          <div class="student-item">
+            <span>Sachintha Gamage</span>
+            <span class="student-points">1270 pts</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="class-actions">
+        <button class="btn btn-leaderboard" onclick="event.stopPropagation(); alert('Opening Leaderboards...')">📊 LeaderBoards</button>
+        <button class="btn btn-new-lesson" onclick="event.stopPropagation(); alert('Creating New Lesson...')">➕ New Lesson</button>
+      </div>
+    </div>
+
+    <!-- 6B Afternoon Class -->
+    <div class="class-card" onclick="window.location.href='class-6b.html'">
+      <div class="class-header">
+        <div>
+          <div class="class-title">6B-Afternoon Class</div>
+          <div class="teacher-name">Teacher: Mr Jayasekara</div>
+        </div>
+        <div class="progress-indicator">58%</div>
+      </div>
+      
+      <div class="progress-bar-container">
+        <div class="progress-bar" style="width: 0%" data-width="58%"></div>
+      </div>
+      
+      <div class="top-performers">
+        <div class="section-title">Top Performers</div>
+        <div class="student-list">
+          <div class="student-item">
+            <span>Sithara Fernando 🏆</span>
+            <span class="student-points">1365 pts</span>
+          </div>
+          <div class="student-item">
+            <span>Sachini Gamage</span>
+            <span class="student-points">1220 pts</span>
+          </div>
+          <div class="student-item">
+            <span>Kavindu Rajapaksha</span>
+            <span class="student-points">1180 pts</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="class-actions">
+        <button class="btn btn-leaderboard" onclick="event.stopPropagation(); alert('Opening Leaderboards...')">📊 LeaderBoards</button>
+        <button class="btn btn-new-lesson" onclick="event.stopPropagation(); alert('Creating New Lesson...')">➕ New Lesson</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Students Grid -->
+  <div class="students-grid">
+    <div class="student-card">
+      <a href="tharusha dashboard.html"> 
+        <div class="student-avatar">👤</div>
+        <div class="student-name">Tharusha mendis</div>
+        <div class="student-level">Level 8 • 1650 pts</div>
+      </a> 
+    </div>
+    
+    <div class="student-card">
+      <a href="sithara dashboard.html">  
+        <div class="student-avatar">👤</div>
+        <div class="student-name">Sithara Fernando</div>
+        <div class="student-level">Level 7 • 1300 pts</div>
+      </a>
+    </div>
+    
+    <div class="student-card">
+      <a href="sachini dashboard.html"> 
+        <div class="student-avatar">👤</div>
+        <div class="student-name">Sachini Gamage</div>
+        <div class="student-level">Level 6 • 1220 pts</div>
+      </a>
+    </div>
+    
+    <div class="student-card">
+      <a href="amara dashboard.html">
+        <div class="student-avatar">👤</div>
+        <div class="student-name">Amara perera</div>
+        <div class="student-level">Level 5 • 1080 pts</div>
+      </a>
+    </div>
+    
+    <div class="student-card">
+      <a href="kavindu dashboard.html" >
+        <div class="student-avatar">👤</div>
+        <div class="student-name">Kavindu Rajapaksha</div>
+        <div class="student-level">Level 6 • 1180 pts</div>
+      </a>
+      
+    </div>
+  </div>
+
+  <script>
+    // Animate progress bars on load
+    window.addEventListener('load', () => {
+      const progressBars = document.querySelectorAll('.progress-bar');
+      progressBars.forEach(bar => {
+        const targetWidth = bar.getAttribute('data-width');
+        setTimeout(() => {
+          bar.style.width = targetWidth;
+        }, 300);
+      });
+    });
+
+    // Add click handlers for student cards
+    document.querySelectorAll('.student-card').forEach(card => {
+      card.addEventListener('click', () => {
+        // Navigate to student dashboard
+        window.location.href = 'student-dashboard.html';
+      });
+    });
+  </script>
+</body>
+</html>
