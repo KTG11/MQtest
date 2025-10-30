@@ -3,13 +3,15 @@ from flask_cors import CORS  # ✅ Allow frontend to access backend
 from google import genai
 from google.genai import types
 import io
+import os
 
 # --- Flask Setup ---
 app = Flask(__name__)
 CORS(app)  # ✅ Enables CORS for all routes
 
 # --- Gemini Client Setup ---
-client = genai.Client(api_key="AIzaSyDlD417WYcttYZfn3PpXIu3e6F2VNIIDnI")  # 🔒 Replace with env var in production
+client = genai.Client(api_key=os.environ.get("AIzaSyDlD417WYcttYZfn3PpXIu3e6F2VNIIDnIY"))
+  # 🔒 Replace with env var in production
 model = "gemini-2.5-flash"
 
 # --- System Instruction (you can expand this) ---
@@ -116,7 +118,7 @@ def home():
 
 
 
-if __name__ == '__main__':
-    # Run the Flask server
-    app.run(host="0.0.0.0", port=10000, debug=True)
 
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
