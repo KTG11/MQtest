@@ -104,6 +104,16 @@ def solve_math_question():
     except Exception as e:
         print("Error:", e)
         return jsonify({'error': str(e)}), 500
+    
+
+@app.route('/')
+def home():
+    return '''
+        <h2>🚀 MathMentor API is Running!</h2>
+        <p>Welcome to the MathMentor backend powered by Flask + Gemini AI.</p>
+        <p>Use <code>/solve</code> to send math questions via POST requests.</p>
+    '''
+
 
 
 if __name__ == '__main__':
