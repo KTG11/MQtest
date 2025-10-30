@@ -75,7 +75,7 @@
           <div class="card__content">
             <h2 class="card__title">Daily Quiz</h2>
             <p class="card__description">One bite‑sized question to keep the streak alive.</p>
-            <button class="cta" id="openQuiz">Take today’s quiz</button>
+            <button class="cta" id="openQuiz">Take today's quiz</button>
           </div>
         </article>
 
@@ -105,7 +105,7 @@
               <input id="chatInput" type="text" placeholder="Ask a math question…" required />
               <button type="submit" class="btn primary" id="sendChat">Send</button>
             </form>
-            <div class="muted hint">Try: “Explain Indices with examples.”</div>
+            <div class="muted hint">Try: "Explain Indices with examples."</div>
           </div>
         </article>
 
@@ -483,9 +483,6 @@
   <script src="magicbento.js"></script>
   <script src="app.js"></script>
 
-
-
-
   <script>
 // ===================== AI STUDY BUDDY INTEGRATION =====================
 (() => {
@@ -535,7 +532,7 @@
       if (data.response) {
         addMessage("ai", data.response);
       } else {
-        addMessage("ai", "⚠️ Sorry, I couldn’t find an answer to that one.");
+        addMessage("ai", "⚠️ Sorry, I couldn't find an answer to that one.");
       }
     } catch (err) {
       thinking.remove();

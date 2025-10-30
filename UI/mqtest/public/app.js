@@ -15,7 +15,7 @@ const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 const numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 // Smooth anchor scroll + mobile menu close
-$$('a[href^="#"]').forEach(a => {
+ $$('a[href^="#"]').forEach(a => {
   a.addEventListener('click', (e) => {
     const id = a.getAttribute('href');
     if(id.length > 1){
@@ -26,11 +26,11 @@ $$('a[href^="#"]').forEach(a => {
     }
   });
 });
-$('#hamburger')?.addEventListener('click', () => {
+ $('#hamburger')?.addEventListener('click', () => {
   $('#navlinks')?.classList.toggle('open');
   $('#hamburger')?.setAttribute('aria-expanded', $('#navlinks')?.classList.contains('open'));
 });
-$('#year').textContent = new Date().getFullYear();
+ $('#year').textContent = new Date().getFullYear();
 
 // ===== Leaderboard Ticker =====
 const players = [
@@ -67,7 +67,7 @@ function syncStats(){
   } else { $('#btnCheckIn').textContent = "Check in today"; $('#btnCheckIn').disabled = false; }
 }
 syncStats();
-$('#btnCheckIn')?.addEventListener('click', () => {
+ $('#btnCheckIn')?.addEventListener('click', () => {
   if(lastCheck === todayStr()) return;
   if(lastCheck !== yesterdayStr() && lastCheck !== todayStr()) streak = 0;
   streak += 1; lastCheck = todayStr(); points += 10;
@@ -89,13 +89,13 @@ const quizBank = [
   {q:"Find the perimeter of a 4×7 rectangle", a:"22"},
 ];
 let todaysQuiz = quizBank[Math.floor(Math.random()*quizBank.length)];
-$('#openQuiz')?.addEventListener('click', () => {
+ $('#openQuiz')?.addEventListener('click', () => {
   $('#quizQuestion').textContent = todaysQuiz.q;
   $('#quizAnswer').value = "";
   $('#quizFeedback').textContent = "";
   $('#quizDialog').showModal();
 });
-$('#quizForm')?.addEventListener('submit', (e) => {
+ $('#quizForm')?.addEventListener('submit', (e) => {
   e.preventDefault();
   const val = $('#quizAnswer').value.trim().replace(/\s+/g,'');
   if(!val) return;
@@ -111,37 +111,37 @@ $('#quizForm')?.addEventListener('submit', (e) => {
 // ===== Lessons (Past / Current / Future) =====
 const lessonsData = {
   past: [
-    {title:"Number Patterns", dur:"20 min"},
-    {title:"Perimeter", dur:"25 min"},
-    {title:"Angles", dur:"22 min"},
-    {title:"Directed Numbers", dur:"24 min"},
+    {title:"Number Patterns", dur:"20 min", url:"https://mqtest-1.onrender.com/number-patterns"},
+    {title:"Perimeter", dur:"25 min", url:"https://mqtest-1.onrender.com/perimeter"},
+    {title:"Angles", dur:"22 min", url:"https://mqtest-1.onrender.com/angles"},
+    {title:"Directed Numbers", dur:"24 min", url:"https://mqtest-1.onrender.com/directed-numbers"},
   ],
   current: [
-    {title:"Algebraic Expressions", dur:"30 min"},
-    {title:"Solids", dur:"28 min"},
-    {title:"Factors", dur:"20 min"},
-    {title:"Square Root", dur:"18 min"},
+    {title:"Algebraic Expressions", dur:"30 min", url:"https://mqtest-1.onrender.com/algebra"},
+    {title:"Solids", dur:"28 min", url:"https://mqtest-1.onrender.com/solids"},
+    {title:"Factors", dur:"20 min", url:"https://mqtest-1.onrender.com/factors"},
+    {title:"Square Root", dur:"18 min", url:"https://mqtest-1.onrender.com/square-root"},
   ],
   future: [
-    {title:"Mass", dur:"22 min"},
-    {title:"Indices", dur:"26 min"},
-    {title:"Symmetry", dur:"20 min"},
-    {title:"Triangles", dur:"24 min"},
+    {title:"Mass", dur:"22 min", url:"https://mqtest-1.onrender.com/mass"},
+    {title:"Indices", dur:"26 min", url:"https://mqtest-1.onrender.com/indices"},
+    {title:"Symmetry", dur:"20 min", url:"https://mqtest-1.onrender.com/symmetry"},
+    {title:"Triangles", dur:"24 min", url:"https://mqtest-1.onrender.com/triangles"},
   ],
   Games: [
-    {title:"Algebra", dur:"22 min"},
-    {title:"Geometry", dur:"26 min"},
+    {title:"Algebra", dur:"22 min", url:"https://mqtest-1.onrender.com/algebra"},
+    {title:"Geometry", dur:"26 min", url:"https://mqtest-1.onrender.com/geometry"},
   ]
 };
 function renderLessonList(group='past'){
   const list = $('#lessonList');
   list.innerHTML = lessonsData[group].map(x => (
-    `<div class="lesson"><div>${x.title}<br><small>${x.dur}</small></div><button class="btn" onclick="window.location.href='https://mqtest-1.onrender.com/algebra'">Start</button></div>`
+    `<div class="lesson"><div>${x.title}<br><small>${x.dur}</small></div><button class="btn" onclick="window.location.href='${x.url}'">Start</button></div>`
   )).join('');
 }
 
 renderLessonList('past');
-$$('#card-lessons .tab').forEach(tab => {
+ $$('#card-lessons .tab').forEach(tab => {
   tab.addEventListener('click', () => {
     $$('#card-lessons .tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
@@ -177,7 +177,7 @@ const shopItems = [
   {title:'Avatar: Theta', price:260, type:'avatar', img:'assets/avatars/avatar11.svg'},
   {title:'Avatar: Beta', price:260, type:'avatar', img:'assets/avatars/avatar12.svg'},
 ];
-$('#shopCards').innerHTML = shopItems.map(i => (
+ $('#shopCards').innerHTML = shopItems.map(i => (
   `<div class=\"shop-card\"><img src=\"${i.img || 'assets/avatars/avatar1.svg'}\" alt=\"\"><div style=\"flex:1\"><h3>${i.title}</h3><p class=\"muted\">${i.type==='pro'?'Unlock all features': i.price + ' pts'}</p></div><button class=\"btn\">${i.type==='pro'?'Go Pro':'Redeem'}</button></div>`
 )).join('');
 
@@ -191,7 +191,7 @@ function updateRank(){
   $('#rankLabel').textContent = level < 5 ? 'Apprentice' : level < 10 ? 'Strategist' : 'Grandmaster';
   $('#globalRank').textContent = `#${clamp(1000 - points, 1, 9999)}`;
 }
-$('#btnBoost')?.addEventListener('click', () => {
+ $('#btnBoost')?.addEventListener('click', () => {
   points += 25; localStorage.setItem(STORAGE_KEYS.points, String(points)); syncStats();
 });
 
@@ -551,13 +551,47 @@ const lessonIcons = {
   "Tessellation":"assets/lessons/tessellation.svg"
 };
 
+// Lesson URLs mapping
+const lessonUrls = {
+  "Number Patterns":"https://mqtest-1.onrender.com/number-patterns",
+  "Perimeter":"https://mqtest-1.onrender.com/perimeter",
+  "Angles":"https://mqtest-1.onrender.com/angles",
+  "Directed Numbers":"https://mqtest-1.onrender.com/directed-numbers",
+  "Algebraic Expressions":"https://mqtest-1.onrender.com/algebra",
+  "Solids":"https://mqtest-1.onrender.com/solids",
+  "Factors":"https://mqtest-1.onrender.com/factors",
+  "Square Root":"https://mqtest-1.onrender.com/square-root",
+  "Mass":"https://mqtest-1.onrender.com/mass",
+  "Indices":"https://mqtest-1.onrender.com/indices",
+  "Symmetry":"https://mqtest-1.onrender.com/symmetry",
+  "Triangles":"https://mqtest-1.onrender.com/triangles",
+  "Fractions":"https://mqtest-1.onrender.com/fractions",
+  "Decimals":"https://mqtest-1.onrender.com/decimals",
+  "Ratios":"https://mqtest-1.onrender.com/ratios",
+  "Equations":"https://mqtest-1.onrender.com/equations",
+  "Percentages":"https://mqtest-1.onrender.com/percentages",
+  "Sets":"https://mqtest-1.onrender.com/sets",
+  "Area":"https://mqtest-1.onrender.com/area",
+  "Time":"https://mqtest-1.onrender.com/time",
+  "Volume and Capacity":"https://mqtest-1.onrender.com/volume",
+  "Circle":"https://mqtest-1.onrender.com/circle",
+  "Location of a Place":"https://mqtest-1.onrender.com/location",
+  "Number Line and Cartesian Plane":"https://mqtest-1.onrender.com/number-line",
+  "Triangle Constructions":"https://mqtest-1.onrender.com/triangle-constructions",
+  "Data Representation and Interpretation":"https://mqtest-1.onrender.com/data",
+  "Scale Drawings":"https://mqtest-1.onrender.com/scale",
+  "Probability":"https://mqtest-1.onrender.com/probability",
+  "Tessellation":"https://mqtest-1.onrender.com/tessellation"
+};
+
 function renderLessonsGrid(){
   const grid = document.getElementById('lessonsCards');
   if(!grid) return;
   const items = lessonsShowAll ? allLessons : allLessons.slice(0, LESSONS_INIT_COUNT);
   grid.innerHTML = items.map(title => {
     const mins = approxMinutes[title] ?? 24;
-    return `<div class="lesson-card"><div class="lesson-top"><img class="thumb" src="${lessonIcons[title] || 'assets/lessons/default.svg'}" alt=""><div><h3>${title}</h3><p>Approx. ${mins} min</p></div></div><button class="btn">Preview</button></div>`;
+    const url = lessonUrls[title] || "#";
+    return `<div class="lesson-card"><div class="lesson-top"><img class="thumb" src="${lessonIcons[title] || 'assets/lessons/default.svg'}" alt=""><div><h3>${title}</h3><p>Approx. ${mins} min</p></div></div><button class="btn" onclick="window.location.href='${url}'">Preview</button></div>`;
   }).join('');
   const btn = document.getElementById('toggleAllLessons');
   if(btn){
