@@ -136,7 +136,7 @@ const lessonsData = {
 function renderLessonList(group='past'){
   const list = $('#lessonList');
   list.innerHTML = lessonsData[group].map(x => (
-    `<div class="lesson"><div>${x.title}<br><small>${x.dur}</small></div><button class="btn" onclick="window.location.href='https://www.youtube.com/'">Start</button></div>`
+    `<div class="lesson"><div>${x.title}<br><small>${x.dur}</small></div><button class="btn" onclick="window.location.href='https://mqtest-1.onrender.com/algebra'">Start</button></div>`
   )).join('');
 }
 
@@ -196,10 +196,6 @@ $('#btnBoost')?.addEventListener('click', () => {
 });
 
 // ===== Dreams (game-like destinations) =====
-// Updated list of cities for the Dreams mini‑game. Players can now purchase
-// additional travel locations using their points. Each object includes the city
-// name, its country (sub), a flag emoji, and an associated image. The images
-// are Twemoji flag icons stored in assets/cities.
 const cities = [
   {name:'Singapore', sub:'Singapore', flag:'🇸🇬', img:'assets/cities/singapore_flag.png'},
   {name:'Tokyo', sub:'Japan', flag:'🇯🇵', img:'assets/cities/japan_flag.png'},
@@ -252,10 +248,6 @@ function renderDreams(){
 }
 
 // ===== Dream Shop (Destinations, Houses, Super Cars) =====
-// Data for dream shop items. Each category contains objects with a unique id,
-// display name, optional country, image path, and point cost. Users can
-// purchase these items with their earned points. Once purchased, the button
-// changes to "Owned" and further clicks are disabled.
 const dreamShopData = {
   destinations: [
     {id:'dest-sg', name:'Singapore', country:'Singapore', img:'assets/cities/singapore_flag.png', price:200},
@@ -291,9 +283,6 @@ const dreamShopData = {
   ],
 };
 
-// Render the dream shop carousels. This function dynamically builds
-// HTML markup for each category and attaches event listeners for navigation
-// and purchasing. It uses smooth scrolling for carousel controls.
 function renderDreamShop(){
   const container = document.getElementById('dreamShop');
   if(!container) return;
@@ -307,7 +296,6 @@ function renderDreamShop(){
     const items = dreamShopData[cat.key] || [];
     const section = document.createElement('div');
     section.className = 'dream-category';
-    // Build header with category icon and collapse toggle
     const iconName = cat.key;
     let html = `<div class="dream-category-header"><img class="dream-cat-icon" src="assets/dreams/${iconName}.png" alt=""><h3>${cat.title}</h3><button class="dream-category-toggle" aria-expanded="true">−</button></div>`;
     html += `<div class="carousel" id="${cat.key}Carousel">`;
@@ -329,7 +317,6 @@ function renderDreamShop(){
     </div>`;
     section.innerHTML = html;
     container.appendChild(section);
-    // Attach collapse toggle for this dream category
     const toggleBtn = section.querySelector('.dream-category-toggle');
     if (toggleBtn) {
       toggleBtn.addEventListener('click', () => {
@@ -339,13 +326,12 @@ function renderDreamShop(){
       });
     }
   });
-  // Navigation controls
   document.querySelectorAll('.carousel-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const target = document.getElementById(btn.dataset.target);
       if(!target) return;
       const item = target.querySelector('.item');
-      const scrollAmount = item ? (item.offsetWidth + 16) : 220; // 16px gap
+      const scrollAmount = item ? (item.offsetWidth + 16) : 220;
       if(btn.classList.contains('prev')){
         target.scrollBy({left:-scrollAmount, behavior:'smooth'});
       } else {
@@ -353,7 +339,6 @@ function renderDreamShop(){
       }
     });
   });
-  // Purchase buttons
   document.querySelectorAll('.buy-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const price = parseInt(btn.dataset.price, 10);
@@ -371,38 +356,152 @@ function renderDreamShop(){
   });
 }
 renderCities(); renderDreams();
-// Build the dream shop carousels once the cities and dreams are rendered. This
-// call must come after the points and localStorage are initialised so that
-// purchase buttons work correctly.
 renderDreamShop();
 
-// ===== Simple AI Chatbot (rule-based) =====
-const chatBox = $('#chat');
-function appendMsg(text, who='bot'){
-  const div = document.createElement('div');
-  div.className = `msg ${who}`; div.textContent = text;
-  chatBox.appendChild(div); chatBox.scrollTop = chatBox.scrollHeight;
-}
-function botReply(text){
-  const t = text.toLowerCase();
-  if(/indices|powers|exponents/.test(t)) return "Indices rules: a^m × a^n = a^(m+n), a^m / a^n = a^(m−n), (a^m)^n = a^(mn).";
-  if(/perimeter/.test(t)) return "Perimeter of rectangle a×b is 2(a+b). Try a=4, b=7 → 22.";
-  if(/fractions/.test(t)) return "To add fractions, use common denominators: a/b + c/d = (ad+cb)/bd.";
-  if(/probability/.test(t)) return "Basic probability: P(A) = favorable outcomes / total outcomes (0≤P≤1).";
-  if(/hello|hi|hey/.test(t)) return "Hey! Ask me about Number Patterns, Algebra, Indices, or say 'quiz me'.";
-  if(/quiz me|quiz/.test(t)){ const qs = ['What is 9×6?','Solve x+8=12','What is √81?']; return qs[Math.floor(Math.random()*qs.length)]; }
-  if(/^[\d\s\+\-\*\/\.\(\)]+$/.test(t)){ try{ const ans = Function(`'use strict';return (${text})`)(); if(isFinite(ans)) return `That evaluates to ${ans}.`; }catch{} }
-  return "I can help with Grade 8 topics like Angles, Indices, Ratios, Probability, and more!";
-}
-$('#chatForm')?.addEventListener('submit', (e) => {
-  e.preventDefault(); const val = $('#chatInput').value.trim(); if(!val) return;
-  appendMsg(val,'user'); $('#chatInput').value=''; setTimeout(()=> appendMsg(botReply(val),'bot'), 250);
-});
+// ===== WORKING AI CHATBOT WITH API INTEGRATION =====
+// CHANGE this to your backend URL
+const BASE_URL = "https://mqtest-3ypm.onrender.com";
 
+const chatBox = $('#chat');
+const chatForm = $('#chatForm');
+const chatInput = $('#chatInput');
+const sendBtn = $('#sendChat');
+const uploadBtn = $('#uploadBtn');
+const imageInput = $('#imageInput');
+const imagePreview = $('#imagePreview');
+
+let selectedImage = null;
+
+// Add initial welcome message
+if(chatBox && chatBox.children.length === 0){
+  const welcomeDiv = document.createElement('div');
+  welcomeDiv.className = 'chat-message ai';
+  welcomeDiv.textContent = '👋 Hi! I\'m your AI Study Buddy. Ask me any math question or upload an image of a problem you need help with!';
+  chatBox.appendChild(welcomeDiv);
+}
+
+// Handle upload button click
+if(uploadBtn){
+  uploadBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    imageInput?.click();
+  });
+}
+
+// Handle image selection
+if(imageInput){
+  imageInput.addEventListener('change', (e) => {
+    selectedImage = e.target.files[0];
+    if (selectedImage && imagePreview) {
+      imagePreview.textContent = `📎 ${selectedImage.name}`;
+      imagePreview.classList.add('show');
+      if(uploadBtn){
+        uploadBtn.textContent = '✓';
+        uploadBtn.style.background = 'linear-gradient(135deg, #4caf50, #21a1f3)';
+        setTimeout(() => {
+          uploadBtn.textContent = '📎';
+          uploadBtn.style.background = '';
+        }, 2000);
+      }
+    }
+  });
+}
+
+// Add message to chat
+function appendMsg(text, who='ai'){
+  if(!chatBox) return;
+  const div = document.createElement('div');
+  div.className = `chat-message ${who}`;
+  div.textContent = text;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Add loading message
+function addLoading() {
+  if(!chatBox) return;
+  const loadingDiv = document.createElement('div');
+  loadingDiv.className = 'chat-message loading';
+  loadingDiv.id = 'loading-msg';
+  loadingDiv.textContent = '⏳ AI is thinking...';
+  chatBox.appendChild(loadingDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Remove loading message
+function removeLoading() {
+  const loading = document.getElementById('loading-msg');
+  if (loading) loading.remove();
+}
+
+// Handle form submission
+if(chatForm){
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const question = chatInput?.value.trim();
+    if (!question && !selectedImage) return;
+
+    // Disable send button
+    if(sendBtn){
+      sendBtn.disabled = true;
+      sendBtn.textContent = '...';
+    }
+
+    // Add user message
+    if (question) {
+      appendMsg(question, 'user');
+    }
+    if (selectedImage) {
+      appendMsg(`📎 Uploaded: ${selectedImage.name}`, 'user');
+    }
+
+    // Clear input
+    if(chatInput) chatInput.value = '';
+    if(imagePreview) imagePreview.classList.remove('show');
+
+    // Show loading
+    addLoading();
+
+    // Prepare form data
+    const formData = new FormData();
+    if (question) formData.append('question', question);
+    if (selectedImage) formData.append('image', selectedImage);
+
+    try {
+      const response = await fetch(`${BASE_URL}/solve`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      
+      removeLoading();
+
+      if (data.response) {
+        appendMsg(data.response, 'ai');
+      } else {
+        appendMsg('⚠️ Error: ' + (data.error || 'Unknown issue'), 'ai');
+      }
+    } catch (error) {
+      removeLoading();
+      appendMsg('⚠️ Network error. Please check your connection and try again.', 'ai');
+      console.error('Chat error:', error);
+    } finally {
+      // Re-enable send button
+      if(sendBtn){
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send';
+      }
+      
+      // Clear selected image
+      selectedImage = null;
+      if(imageInput) imageInput.value = '';
+    }
+  });
+}
 
 // ===== Lessons cards (image 1 style) =====
-
-// Full list for Grade 8 (cards)
 const allLessons = [
   "Number Patterns","Perimeter","Angles","Directed Numbers","Algebraic Expressions","Solids",
   "Factors","Square Root","Mass","Indices","Symmetry","Triangles","Fractions","Decimals",
@@ -420,8 +519,6 @@ const approxMinutes = {
 const LESSONS_INIT_COUNT = 8;
 let lessonsShowAll = false;
 
-
-// Icons per lesson
 const lessonIcons = {
   "Number Patterns":"assets/lessons/number patterns.png",
   "Perimeter":"assets/lessons/perimeater.png",
@@ -474,105 +571,4 @@ document.getElementById('toggleAllLessons')?.addEventListener('click', () => {
   lessonsShowAll = !lessonsShowAll;
   renderLessonsGrid();
   if(lessonsShowAll){ document.getElementById('lessons').scrollIntoView({behavior:'smooth', block:'start'}); }
-});
-
-
-
-/* ===== Eye Comfort & Motion Toggles ===== */
-const PREFS = { comfort:'mq_comfort', motion:'mq_reduce_motion' };
-function applyPrefs(){
-  const comfortOn = localStorage.getItem(PREFS.comfort) === '1';
-  const motionOn = localStorage.getItem(PREFS.motion) === '1';
-  document.body.classList.toggle('comfort', comfortOn);
-  document.body.classList.toggle('reduce-motion', motionOn);
-  const cBtn = document.getElementById('comfortToggle');
-  const mBtn = document.getElementById('motionToggle');
-  if(cBtn){ cBtn.setAttribute('aria-pressed', comfortOn?'true':'false'); }
-  if(mBtn){ mBtn.setAttribute('aria-pressed', motionOn?'true':'false'); }
-}
-applyPrefs();
-document.getElementById('comfortToggle')?.addEventListener('click', () => {
-  const next = localStorage.getItem(PREFS.comfort) === '1' ? '0' : '1';
-  localStorage.setItem(PREFS.comfort, next); applyPrefs();
-});
-document.getElementById('motionToggle')?.addEventListener('click', () => {
-  const next = localStorage.getItem(PREFS.motion) === '1' ? '0' : '1';
-  localStorage.setItem(PREFS.motion, next); applyPrefs();
-});
-
-// Respect reduced motion OS setting on first visit
-if(localStorage.getItem(PREFS.motion) == null && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-  localStorage.setItem(PREFS.motion, '1'); applyPrefs();
-}
-
-
-/* ===== Light/Dark Theme Toggle ===== */
-const THEME_KEY = 'mq_theme'; // 'light' or 'dark'
-function applyTheme(){
-  const pref = localStorage.getItem(THEME_KEY);
-  const useLight = pref ? pref === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
-  document.body.classList.toggle('light', useLight);
-  const btn = document.getElementById('themeToggle');
-  if(btn){ btn.setAttribute('aria-pressed', useLight ? 'true' : 'false'); btn.textContent = useLight ? '☾' : '☀︎'; }
-}
-applyTheme();
-document.getElementById('themeToggle')?.addEventListener('click', () => {
-  const cur = document.body.classList.contains('light') ? 'light' : 'dark';
-  const next = cur === 'light' ? 'dark' : 'light';
-  localStorage.setItem(THEME_KEY, next); applyTheme();
-});
-// Keep in sync if OS theme changes and user hasn't chosen
-try{
-  const mq = window.matchMedia('(prefers-color-scheme: light)');
-  mq.addEventListener?.('change', () => {
-    if(!localStorage.getItem(THEME_KEY)){ applyTheme(); }
-  });
-}catch{}
-
-// ===== Custom Shop Collapse Functionality =====
-// Top-level shop toggle: show or hide the entire shop content
-const shopToggleBtn = document.getElementById('shopToggle');
-const shopContent = document.getElementById('shopContent');
-if(shopToggleBtn && shopContent){
-  shopToggleBtn.addEventListener('click', () => {
-    const collapsed = shopContent.classList.toggle('collapsed');
-    shopToggleBtn.textContent = collapsed ? 'Show' : 'Hide';
-    shopToggleBtn.setAttribute('aria-expanded', (!collapsed).toString());
-  });
-}
-// Category-level toggles: collapse/expand individual groups
-document.querySelectorAll('.shop-category-header .category-toggle').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const header = btn.closest('.shop-category-header');
-    const category = header?.parentElement;
-    const items = category?.querySelector('.shop-category-items');
-    if(!items) return;
-    const collapsed = items.classList.toggle('collapsed');
-    btn.textContent = collapsed ? '+' : '−';
-    btn.setAttribute('aria-expanded', (!collapsed).toString());
-  });
-});
-
-// ===== Custom Dream Collapse Functionality =====
-// Top-level dream toggle: show or hide the entire dream content
-const dreamToggleBtn = document.getElementById('dreamToggle');
-const dreamContentEl = document.getElementById('dreamContent');
-if (dreamToggleBtn && dreamContentEl) {
-  dreamToggleBtn.addEventListener('click', () => {
-    const collapsed = dreamContentEl.classList.toggle('collapsed');
-    dreamToggleBtn.textContent = collapsed ? 'Show' : 'Hide';
-    dreamToggleBtn.setAttribute('aria-expanded', (!collapsed).toString());
-  });
-}
-
-// Attach collapse functionality to static dream categories
-document.querySelectorAll('.dream-category-header .dream-category-toggle').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const header = btn.closest('.dream-category-header');
-    const category = header?.parentElement;
-    if (!category) return;
-    const collapsed = category.classList.toggle('collapsed');
-    btn.textContent = collapsed ? '+' : '−';
-    btn.setAttribute('aria-expanded', (!collapsed).toString());
-  });
 });

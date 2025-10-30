@@ -7,109 +7,6 @@
   <link rel="icon" href="assets/logo.svg">
   <link rel="stylesheet" href="magicbento.css">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    /* Additional styles for working AI chat */
-    #card-chat .chat {
-      min-height: 300px;
-      max-height: 350px;
-      overflow-y: auto;
-      background: rgba(0,0,0,0.2);
-      border-radius: 12px;
-      padding: 16px;
-      margin: 16px 0;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .chat-message {
-      margin-bottom: 16px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      max-width: 85%;
-      word-wrap: break-word;
-      line-height: 1.6;
-      animation: messageSlide 0.3s ease;
-    }
-
-    @keyframes messageSlide {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .chat-message.user {
-      background: linear-gradient(135deg, #21a1f3, #1976d2);
-      margin-left: auto;
-      text-align: right;
-      color: white;
-    }
-
-    .chat-message.ai {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #f7fbff;
-    }
-
-    .chat-message.loading {
-      background: rgba(255,255,255,0.03);
-      font-style: italic;
-      color: #bfc7d6;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    #card-chat .composer {
-      display: flex;
-      gap: 8px;
-      margin-top: auto;
-    }
-
-    #card-chat .composer input[type="text"] {
-      flex: 1;
-    }
-
-    #card-chat .composer input[type="file"] {
-      display: none;
-    }
-
-    #card-chat .composer button {
-      min-width: auto;
-      padding: 10px 16px;
-    }
-
-    #card-chat .composer #uploadBtn {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 10px 14px;
-      font-size: 1.1rem;
-    }
-
-    #card-chat .composer #uploadBtn:hover {
-      background: rgba(255,255,255,0.15);
-    }
-
-    #card-chat .composer button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    #imagePreview {
-      display: none;
-      margin: 8px 0;
-      padding: 8px 12px;
-      background: rgba(76, 175, 80, 0.2);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      color: #4caf50;
-    }
-
-    #imagePreview.show {
-      display: block;
-    }
-  </style>
 </head>
 <body>
   <!-- NAVBAR (fixed) -->
@@ -178,7 +75,7 @@
           <div class="card__content">
             <h2 class="card__title">Daily Quiz</h2>
             <p class="card__description">One bite‑sized question to keep the streak alive.</p>
-            <button class="cta" id="openQuiz">Take today's quiz</button>
+            <button class="cta" id="openQuiz">Take today’s quiz</button>
           </div>
         </article>
 
@@ -198,24 +95,17 @@
           </div>
         </article>
 
-        <!-- 4) LONG: AI Chatbot - NOW WITH WORKING API -->
+        <!-- 4) LONG: AI Chatbot -->
         <article class="card long card--border-glow card--text-autohide" id="card-chat">
           <div class="card__header"><div class="card__label">Buddy</div></div>
           <div class="card__content">
             <h2 class="card__title">AI Study Buddy</h2>
-            <div class="chat" id="chat" aria-live="polite">
-              <div class="chat-message ai">
-                👋 Hi! I'm your AI Study Buddy. Ask me any math question or upload an image of a problem you need help with!
-              </div>
-            </div>
-            <div id="imagePreview"></div>
+            <div class="chat" id="chat" aria-live="polite"></div>
             <form class="composer" id="chatForm" autocomplete="off">
-              <input id="chatInput" type="text" placeholder="Ask a math question…" />
-              <input type="file" id="imageInput" accept="image/*" />
-              <button type="button" id="uploadBtn" title="Upload image">📎</button>
+              <input id="chatInput" type="text" placeholder="Ask a math question…" required />
               <button type="submit" class="btn primary" id="sendChat">Send</button>
             </form>
-            <div class="muted hint">Try: "Explain Indices with examples" or upload an image.</div>
+            <div class="muted hint">Try: “Explain Indices with examples.”</div>
           </div>
         </article>
 
@@ -271,12 +161,15 @@
 
   <section class="section" id="dreams">
     <div class="container">
+      <!-- Dreams heading with collapsible toggle -->
       <h2>
         <img class="section-icon" src="assets/section/dreams.svg" alt="">
         Dreams
         <button class="dream-toggle" id="dreamToggle" aria-expanded="true">Hide</button>
       </h2>
+      <!-- Dreams content wraps the instructional cards and the dream shop -->
       <div id="dreamContent" class="dream-content">
+        <!-- Instructional cards with images -->
         <div class="dream-cards">
           <div class="dream-card">
             <img src="assets/dreams/adventure.png" alt="" class="dream-card-img">
@@ -297,7 +190,12 @@
             </div>
           </div>
         </div>
+        <!-- Custom Dream categories grid. The original dynamic dreamShop has been hidden
+             to allow a bespoke presentation. Each category is represented with an
+             icon, a title and four purchasable dream items. Clicking the minus/plus
+             button collapses or expands the group. -->
         <div id="dreamCategories" class="dream-categories">
+          <!-- Travel Destinations Category -->
           <div class="dream-category">
             <div class="dream-category-header">
               <div class="dream-category-title">
@@ -313,22 +211,26 @@
                 <div class="dream-item-price">200 pts</div>
               </div>
               <div class="dream-item">
+                <!-- Use the Singapore artwork for Tokyo as a placeholder since the Tokyo image failed to generate -->
                 <img src="assets/dreams/dest_singapore.png" alt="Tokyo" class="dream-item-img">
                 <div class="dream-item-name">Tokyo</div>
                 <div class="dream-item-price">200 pts</div>
               </div>
               <div class="dream-item">
+                <!-- Use the Singapore artwork for London -->
                 <img src="assets/dreams/dest_singapore.png" alt="London" class="dream-item-img">
                 <div class="dream-item-name">London</div>
                 <div class="dream-item-price">200 pts</div>
               </div>
               <div class="dream-item">
+                <!-- Use the Singapore artwork for Paris -->
                 <img src="assets/dreams/dest_singapore.png" alt="Paris" class="dream-item-img">
                 <div class="dream-item-name">Paris</div>
                 <div class="dream-item-price">200 pts</div>
               </div>
             </div>
           </div>
+          <!-- Modern Houses Category -->
           <div class="dream-category">
             <div class="dream-category-header">
               <div class="dream-category-title">
@@ -360,6 +262,7 @@
               </div>
             </div>
           </div>
+          <!-- Super Cars Category -->
           <div class="dream-category">
             <div class="dream-category-header">
               <div class="dream-category-title">
@@ -398,13 +301,18 @@
 
   <section class="section" id="shop">
     <div class="container">
+      <!-- Shop heading with collapsible toggle -->
       <h2>
         <img class="section-icon" src="assets/section/shop.svg" alt="">
         Shop
+        <!-- Button to collapse/expand entire shop section -->
         <button class="shop-toggle" id="shopToggle" aria-expanded="true">Hide</button>
       </h2>
+      <!-- Preserve original shop container but hide it so legacy JS doesn't error -->
       <div class="cards" id="shopCards" style="display:none;"></div>
+      <!-- Custom shop content -->
       <div id="shopContent" class="shop-content">
+        <!-- DC Superheroes Category -->
         <div class="shop-category">
           <div class="shop-category-header">
             <h3>DC Superheroes</h3>
@@ -417,7 +325,7 @@
             </div>
             <div class="shop-card">
               <img src="assets/shop/dc_superheroes.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">The Flash</div>
+              <div class="shop-card-name">The Flash</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/dc_superheroes.png" alt="" class="shop-card-img">
@@ -425,10 +333,11 @@
             </div>
             <div class="shop-card">
               <img src="assets/shop/dc_superheroes.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Wonder Woman</div>
+              <div class="shop-card-name">Wonder Woman</div>
             </div>
           </div>
         </div>
+        <!-- Anime Characters Category -->
         <div class="shop-category">
           <div class="shop-category-header">
             <h3>Anime Characters</h3>
@@ -437,15 +346,15 @@
           <div class="shop-category-items">
             <div class="shop-card">
               <img src="assets/shop/anime_characters.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Naruto Uzumaki</div>
+              <div class="shop-card-name">Naruto Uzumaki</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/anime_characters.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Sasuke Uchiha</div>
+              <div class="shop-card-name">Sasuke Uchiha</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/anime_characters.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Sakura Haruno</div>
+              <div class="shop-card-name">Sakura Haruno</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/anime_characters.png" alt="" class="shop-card-img">
@@ -453,6 +362,7 @@
             </div>
           </div>
         </div>
+        <!-- Football Category -->
         <div class="shop-category">
           <div class="shop-category-header">
             <h3>Football</h3>
@@ -461,22 +371,23 @@
           <div class="shop-category-items">
             <div class="shop-card">
               <img src="assets/shop/football.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Lionel Messi</div>
+              <div class="shop-card-name">Lionel Messi</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/football.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Cristiano Ronaldo</div>
+              <div class="shop-card-name">Cristiano Ronaldo</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/football.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Kylian Mbappé</div>
+              <div class="shop-card-name">Kylian Mbappé</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/football.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Erling Haaland</div>
+              <div class="shop-card-name">Erling Haaland</div>
             </div>
           </div>
         </div>
+        <!-- Cartoon Category -->
         <div class="shop-category">
           <div class="shop-category-header">
             <h3>Cartoon</h3>
@@ -485,7 +396,7 @@
           <div class="shop-category-items">
             <div class="shop-card">
               <img src="assets/shop/cartoon.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Ben 10</div>
+              <div class="shop-card-name">Ben 10</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/cartoon.png" alt="" class="shop-card-img">
@@ -497,31 +408,32 @@
             </div>
             <div class="shop-card">
               <img src="assets/shop/cartoon.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Powerpuff Girls</div>
+              <div class="shop-card-name">Powerpuff Girls</div>
             </div>
           </div>
         </div>
+        <!-- K-Drama Stars Category -->
         <div class="shop-category">
           <div class="shop-category-header">
-            <h3>K‑Drama Stars</h3>
+            <h3>K‑Drama Stars</h3>
             <button class="category-toggle" aria-expanded="true">−</button>
           </div>
           <div class="shop-category-items">
             <div class="shop-card">
               <img src="assets/shop/kdrama.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Hyun Bin</div>
+              <div class="shop-card-name">Hyun Bin</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/kdrama.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Son Ye‑jin</div>
+              <div class="shop-card-name">Son Ye‑jin</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/kdrama.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Park Seo‑joon</div>
+              <div class="shop-card-name">Park Seo‑joon</div>
             </div>
             <div class="shop-card">
               <img src="assets/shop/kdrama.png" alt="" class="shop-card-img">
-              <div class="shop-card-name">Kim Soo‑hyun</div>
+              <div class="shop-card-name">Kim Soo‑hyun</div>
             </div>
           </div>
         </div>
@@ -570,128 +482,69 @@
 
   <script src="magicbento.js"></script>
   <script src="app.js"></script>
-  
-  <!-- AI CHAT INTEGRATION SCRIPT -->
+
+
+
+
   <script>
-    // CHANGE this to your backend URL
-    const BASE_URL = "https://mqtest-3ypm.onrender.com";
+// ===================== AI STUDY BUDDY INTEGRATION =====================
+(() => {
+  const chatForm = document.getElementById("chatForm");
+  const chatInput = document.getElementById("chatInput");
+  const chatBox = document.getElementById("chat");
+  const API_BASE = "https://mqtest-3ypm.onrender.com"; // your backend
 
-    const chatDiv = document.getElementById('chat');
-    const chatForm = document.getElementById('chatForm');
-    const chatInput = document.getElementById('chatInput');
-    const sendBtn = document.getElementById('sendChat');
-    const uploadBtn = document.getElementById('uploadBtn');
-    const imageInput = document.getElementById('imageInput');
-    const imagePreview = document.getElementById('imagePreview');
+  // helper: add chat bubble
+  function addMessage(sender, text) {
+    const bubble = document.createElement("div");
+    bubble.className = `msg ${sender}`;
+    bubble.innerHTML = `<div class="bubble">${text}</div>`;
+    chatBox.appendChild(bubble);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
-    let selectedImage = null;
+  // handle chat submission
+  chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const question = chatInput.value.trim();
+    if (!question) return;
+    chatInput.value = "";
 
-    // Handle upload button click
-    uploadBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      imageInput.click();
-    });
+    // show user question
+    addMessage("user", question);
 
-    // Handle image selection
-    imageInput.addEventListener('change', (e) => {
-      selectedImage = e.target.files[0];
-      if (selectedImage) {
-        imagePreview.textContent = `📎 ${selectedImage.name}`;
-        imagePreview.classList.add('show');
-        uploadBtn.textContent = '✓';
-        uploadBtn.style.background = 'linear-gradient(135deg, #4caf50, #21a1f3)';
-        setTimeout(() => {
-          uploadBtn.textContent = '📎';
-          uploadBtn.style.background = '';
-        }, 2000);
-      }
-    });
+    // show typing indicator
+    const thinking = document.createElement("div");
+    thinking.className = "msg ai";
+    thinking.innerHTML = `<div class="bubble typing">🤔 Thinking...</div>`;
+    chatBox.appendChild(thinking);
+    chatBox.scrollTop = chatBox.scrollHeight;
 
-    // Add message to chat
-    function addMessage(text, type = 'ai') {
-      const msgDiv = document.createElement('div');
-      msgDiv.className = `chat-message ${type}`;
-      msgDiv.textContent = text;
-      chatDiv.appendChild(msgDiv);
-      chatDiv.scrollTop = chatDiv.scrollHeight;
-    }
-
-    // Add loading message
-    function addLoading() {
-      const loadingDiv = document.createElement('div');
-      loadingDiv.className = 'chat-message loading';
-      loadingDiv.id = 'loading-msg';
-      loadingDiv.textContent = '⏳ AI is thinking...';
-      chatDiv.appendChild(loadingDiv);
-      chatDiv.scrollTop = chatDiv.scrollHeight;
-    }
-
-    // Remove loading message
-    function removeLoading() {
-      const loading = document.getElementById('loading-msg');
-      if (loading) loading.remove();
-    }
-
-    // Handle form submission
-    chatForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const question = chatInput.value.trim();
-      if (!question && !selectedImage) return;
-
-      // Disable send button
-      sendBtn.disabled = true;
-      sendBtn.textContent = '...';
-
-      // Add user message
-      if (question) {
-        addMessage(question, 'user');
-      }
-      if (selectedImage) {
-        addMessage(`📎 Uploaded: ${selectedImage.name}`, 'user');
-      }
-
-      // Clear input
-      chatInput.value = '';
-      imagePreview.classList.remove('show');
-
-      // Show loading
-      addLoading();
-
-      // Prepare form data
+    try {
       const formData = new FormData();
-      if (question) formData.append('question', question);
-      if (selectedImage) formData.append('image', selectedImage);
+      formData.append("question", question);
 
-      try {
-        const response = await fetch(`${BASE_URL}/solve`, {
-          method: 'POST',
-          body: formData
-        });
+      const res = await fetch(`${API_BASE}/solve`, {
+        method: "POST",
+        body: formData
+      });
 
-        const data = await response.json();
-        
-        removeLoading();
+      const data = await res.json();
+      thinking.remove();
 
-        if (data.response) {
-          addMessage(data.response, 'ai');
-        } else {
-          addMessage('⚠️ Error: ' + (data.error || 'Unknown issue'), 'ai');
-        }
-      } catch (error) {
-        removeLoading();
-        addMessage('⚠️ Network error. Please check your connection and try again.', 'ai');
-        console.error('Chat error:', error);
-      } finally {
-        // Re-enable send button
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Send';
-        
-        // Clear selected image
-        selectedImage = null;
-        imageInput.value = '';
+      if (data.response) {
+        addMessage("ai", data.response);
+      } else {
+        addMessage("ai", "⚠️ Sorry, I couldn’t find an answer to that one.");
       }
-    });
-  </script>
+    } catch (err) {
+      thinking.remove();
+      addMessage("ai", "⚠️ Error reaching study buddy service.");
+      console.error(err);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
