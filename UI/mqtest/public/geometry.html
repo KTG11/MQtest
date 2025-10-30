@@ -3,228 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Shape World</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      color: white;
-    }
-    #infoBox {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 15px;
-      border-radius: 8px;
-      display: none;
-      width: 250px;
-    }
-  </style>
-</head>
-<body>
-  <div id="infoBox"></div>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
-  <script>
-    let scene, camera, renderer, raycaster, mouse;
-    let move = { forward: false, back: false, left: false, right: false };
-    let velocity = 0.2;
-    const infoBox = document.getElementById('infoBox');
-
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-    let rotationSpeed = 0.005;
-
-    const shapesData = {
-      cube: { name: "Cube", faces: 6, edges: 12, vertices: 8, volume: "V = a³" },
-      sphere: { name: "Sphere", faces: "∞ (curved)", edges: 0, vertices: 0, volume: "V = (4/3)πr³" },
-      cylinder: { name: "Cylinder", faces: 3, edges: 2, vertices: 0, volume: "V = πr²h" },
-      pyramid: { name: "Square Pyramid", faces: 5, edges: 8, vertices: 5, volume: "V = (1/3) × base² × height" },
-      tetra: { name: "Triangular Pyramid (Tetrahedron)", faces: 4, edges: 6, vertices: 4, volume: "V = (1/3) × base × height" },
-      prism: { name: "Triangular Prism", faces: 5, edges: 9, vertices: 6, volume: "V = (base_area) × height" }
-    };
-
-    init();
-    animate();
-
-    function init() {
-      scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x87ceeb);
-
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 2, 5);
-
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.shadowMap.enabled = true; // Enable shadows
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      document.body.appendChild(renderer.domElement);
-
-      const light = new THREE.DirectionalLight(0xffffff, 1);
-      light.position.set(5, 10, 7);
-      light.castShadow = true; // Enable shadow casting
-      light.shadow.mapSize.width = 1024;
-      light.shadow.mapSize.height = 1024;
-      scene.add(light);
-      scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-
-      // Ground
-      const ground = new THREE.Mesh(
-        new THREE.PlaneGeometry(100, 100),
-        new THREE.MeshPhongMaterial({ color: 0x228B22 })
-      );
-      ground.rotation.x = -Math.PI / 2;
-      ground.receiveShadow = true; // Receive shadows
-      scene.add(ground);
-
-      // Materials
-      const materials = {
-        cube: new THREE.MeshPhongMaterial({ color: 0x4caf50 }),
-        sphere: new THREE.MeshPhongMaterial({ color: 0x2196f3 }),
-        cylinder: new THREE.MeshPhongMaterial({ color: 0xc0ca33 }),
-        pyramid: new THREE.MeshPhongMaterial({ color: 0xff9800 }),
-        tetra: new THREE.MeshPhongMaterial({ color: 0x9c27b0 }),
-        prism: new THREE.MeshPhongMaterial({ color: 0xff4081 })
-      };
-
-      // Geometries
-      const geometries = {
-        cube: new THREE.BoxGeometry(1, 1, 1),
-        sphere: new THREE.SphereGeometry(0.7, 32, 32),
-        cylinder: new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32),
-        pyramid: new THREE.ConeGeometry(0.8, 1.2, 4),
-        tetra: new THREE.TetrahedronGeometry(0.8),
-        prism: createTriangularPrismGeometry(1, 1)
-      };
-
-      Object.keys(geometries).forEach((key) => {
-        for (let i = 0; i < 3; i++) {
-          const mesh = new THREE.Mesh(geometries[key], materials[key]);
-          mesh.position.set(Math.random() * 40 - 20, 0.5, Math.random() * 40 - 20);
-          mesh.castShadow = true; // Cast shadows
-          mesh.receiveShadow = true;
-          mesh.userData = shapesData[key];
-          scene.add(mesh);
-        }
-      });
-
-      raycaster = new THREE.Raycaster();
-      mouse = new THREE.Vector2();
-
-      window.addEventListener("resize", onWindowResize);
-      window.addEventListener("click", onClick);
-      window.addEventListener("keydown", onKeyDown);
-      window.addEventListener("keyup", onKeyUp);
-
-      renderer.domElement.addEventListener("mousedown", onMouseDown);
-      renderer.domElement.addEventListener("mouseup", onMouseUp);
-      renderer.domElement.addEventListener("mousemove", onMouseMove);
-    }
-
-    // Triangular prism geometry function
-    function createTriangularPrismGeometry(base = 1, height = 1) {
-      const shape = new THREE.Shape();
-      shape.moveTo(-base / 2, -height / 2);
-      shape.lineTo(base / 2, -height / 2);
-      shape.lineTo(0, height / 2);
-      shape.lineTo(-base / 2, -height / 2);
-
-      const extrudeSettings = { depth: 1.5, bevelEnabled: false };
-      return new THREE.ExtrudeGeometry(shape, extrudeSettings);
-    }
-
-    function onWindowResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    function onClick(event) {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
-
-      const intersects = raycaster.intersectObjects(scene.children);
-      if (intersects.length > 0) {
-        const obj = intersects[0].object;
-        if (obj.userData.name) {
-          const d = obj.userData;
-          obj.material.color.set(0x00ff00);
-
-          infoBox.style.display = "block";
-          infoBox.innerHTML = `
-            <h2>${d.name}</h2>
-            <p><strong>Faces:</strong> ${d.faces}</p>
-            <p><strong>Edges:</strong> ${d.edges}</p>
-            <p><strong>Vertices:</strong> ${d.vertices}</p>
-            <p><strong>Volume:</strong> ${d.volume}</p>
-          `;
-        }
-      }
-    }
-
-    function onKeyDown(e) {
-      if (e.key === "w") move.forward = true;
-      if (e.key === "s") move.back = true;
-      if (e.key === "a") move.left = true;
-      if (e.key === "d") move.right = true;
-    }
-
-    function onKeyUp(e) {
-      if (e.key === "w") move.forward = false;
-      if (e.key === "s") move.back = false;
-      if (e.key === "a") move.left = false;
-      if (e.key === "d") move.right = false;
-    }
-
-    function onMouseDown(event) {
-      isDragging = true;
-      previousMousePosition.x = event.clientX;
-      previousMousePosition.y = event.clientY;
-    }
-
-    function onMouseUp() {
-      isDragging = false;
-    }
-
-    function onMouseMove(event) {
-      if (!isDragging) return;
-
-      const deltaMove = {
-        x: event.clientX - previousMousePosition.x,
-        y: event.clientY - previousMousePosition.y,
-      };
-
-      camera.rotation.y -= deltaMove.x * rotationSpeed;
-
-      previousMousePosition.x = event.clientX;
-      previousMousePosition.y = event.clientY;
-    }
-
-    function animate() {
-      requestAnimationFrame(animate);
-
-      const direction = new THREE.Vector3();
-
-      if (move.forward) direction.z -= velocity;
-      if (move.back) direction.z += velocity;
-      if (move.left) direction.x -= velocity;
-      if (move.right) direction.x += velocity;
-
-      camera.position.add(direction.applyEuler(camera.rotation));
-
-      renderer.render(scene, camera);
-    }
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3D Shape Maze</title>
   <style>
     body {
@@ -317,7 +95,9 @@
     ];
 
     let walls = [];
+    let shapes = []; // Store references to all shape meshes
     const cellSize = 2; // Increased from 1 to 2 for wider paths
+    let clock = new THREE.Clock(); // For animation timing
 
     init();
     animate();
@@ -405,30 +185,46 @@
             // Place single shape
             const key = shapeKeys[Math.floor(Math.random() * shapeKeys.length)];
             const mesh = new THREE.Mesh(geometries[key], materials[key]);
+            const baseY = 0.5;
             mesh.position.set(
               x + (Math.random() - 0.5) * 0.8, 
-              0.5, 
+              baseY, 
               z + (Math.random() - 0.5) * 0.8
             );
             mesh.castShadow = true;
             mesh.receiveShadow = true;
-            mesh.userData = shapesData[key];
+            mesh.userData = { 
+              ...shapesData[key], 
+              baseY: baseY, 
+              floatSpeed: 0.5 + Math.random() * 1.5,
+              floatHeight: 0.2 + Math.random() * 0.3,
+              phase: Math.random() * Math.PI * 2
+            };
             scene.add(mesh);
+            shapes.push(mesh);
           } else if (cell === 3) {
             // Place multiple shapes in same location
             const numShapes = 2 + Math.floor(Math.random() * 2);
             for (let i = 0; i < numShapes; i++) {
               const key = shapeKeys[Math.floor(Math.random() * shapeKeys.length)];
               const mesh = new THREE.Mesh(geometries[key], materials[key]);
+              const baseY = 0.5;
               mesh.position.set(
                 x + (Math.random() - 0.5) * 1.2, 
-                0.5, 
+                baseY, 
                 z + (Math.random() - 0.5) * 1.2
               );
               mesh.castShadow = true;
               mesh.receiveShadow = true;
-              mesh.userData = shapesData[key];
+              mesh.userData = { 
+                ...shapesData[key], 
+                baseY: baseY, 
+                floatSpeed: 0.5 + Math.random() * 1.5,
+                floatHeight: 0.2 + Math.random() * 0.3,
+                phase: Math.random() * Math.PI * 2
+              };
               scene.add(mesh);
+              shapes.push(mesh);
             }
           }
         }
@@ -442,15 +238,23 @@
             const z = row * cellSize;
             const key = shapeKeys[Math.floor(Math.random() * shapeKeys.length)];
             const mesh = new THREE.Mesh(geometries[key], materials[key]);
+            const baseY = 0.5;
             mesh.position.set(
               x + (Math.random() - 0.5) * 1.2, 
-              0.5, 
+              baseY, 
               z + (Math.random() - 0.5) * 1.2
             );
             mesh.castShadow = true;
             mesh.receiveShadow = true;
-            mesh.userData = shapesData[key];
+            mesh.userData = { 
+              ...shapesData[key], 
+              baseY: baseY, 
+              floatSpeed: 0.5 + Math.random() * 1.5,
+              floatHeight: 0.2 + Math.random() * 0.3,
+              phase: Math.random() * Math.PI * 2
+            };
             scene.add(mesh);
+            shapes.push(mesh);
           }
         }
       }
@@ -565,6 +369,16 @@
 
     function animate() {
       requestAnimationFrame(animate);
+
+      const elapsedTime = clock.getElapsedTime();
+
+      // Animate shapes floating up and down
+      shapes.forEach(shape => {
+        if (shape.userData.baseY !== undefined) {
+          const floatOffset = Math.sin(elapsedTime * shape.userData.floatSpeed + shape.userData.phase) * shape.userData.floatHeight;
+          shape.position.y = shape.userData.baseY + floatOffset;
+        }
+      });
 
       const direction = new THREE.Vector3();
       const oldPosition = camera.position.clone();
